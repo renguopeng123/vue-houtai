@@ -1,0 +1,179 @@
+<html ng-app="app">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../../../build/common/base.css" rel="stylesheet">
+<script type="text/javascript" src="../../../build/common/base.js"></script>
+<script type="text/javascript" src="../../../build/common/ngEdit.js"></script>
+
+<script type="text/javascript">
+	var app = angular.module('app', [ 'baseDirective' ]);
+	app.controller("ctrl", [ '$scope', 'baseService', 'ArrayToolService', function($scope, baseService, ArrayToolService) {
+		$scope.ArrayTool = ArrayToolService;
+		$scope.parentScope = window.passData.parentScope;
+		$scope.parentDom = $(window.passData.selectedDom);
+
+		$scope.init = function() {
+			$scope.data = {};
+			//读取元素上的值
+			$scope.data["min"] = $scope.parentDom.attr("v-bind:min");
+			$scope.data["minformat"] = $scope.parentDom.attr("minformat");
+			$scope.data["max"] = $scope.parentDom.attr("v-bind:max");
+			$scope.data["maxformat"] = $scope.parentDom.attr("maxformat");
+			$scope.data["cal"] = $scope.parentDom.attr("v-bind:cal.sync");
+			$scope.data["caltype"] = $scope.parentDom.attr("caltype");
+
+			//获取bo信息
+			var url = __ctx + "/bus/businessObject/getObject";
+			var defer = baseService.postForm(url, {
+				key : $scope.parentScope.data.boKey,
+				fill : true
+			});
+			$.getResultData(defer, function(data) {
+				$scope.bo = data;
+				console.info(data);
+				$scope.dateColumnList = [];//日期字段数组
+				$scope.numberColumnList = [];//数字字段数组
+				$scope.handlePath(data.relation);
+				$scope.findDateColumn(data.relation);
+			}, null, true);
+		};
+
+		//计算下拉框的值
+		$scope.findDateColumn = function(relation) {
+			angular.forEach(relation.table.columnsWithOutHidden, function(column) {
+				var vModel = $scope.parentDom.attr("v-model");
+				//不能选自己
+				if (column.key == vModel.split(".")[vModel.split(".").length - 1]) {
+					return;
+				}
+
+				if (column.type != "date" && column.type != "number") {
+					return;
+				}
+
+				var path = relation.path + "." + column.key;
+
+				if (column.type == "date") {
+					var format = JSON.parse(column.ctrl.config)["format"];
+					$scope.dateColumnList.push({
+						desc : column.comment + "(" + column.table.comment + ")",
+						path : path,
+						format : format
+					});
+				} else {
+					$scope.numberColumnList.push({
+						desc : column.comment + "(" + column.table.comment + ")",
+						path : path,
+					});
+				}
+
+			});
+			//递归子关系
+			angular.forEach(relation.children, function(child) {
+				$scope.findDateColumn(child);
+			});
+		};
+
+		$scope.minChange = function() {
+			if (!$scope.data.min) {//置空
+				$scope.data["cal"] = "";
+				$scope.data["caltype"] = "";
+				return;
+			}
+
+			angular.forEach($scope.dateColumnList, function(column) {
+				if (column.path == $scope.data.min) {
+					$scope.data.minformat = column.format;
+				}
+			});
+		};
+
+		$scope.maxChange = function() {
+			angular.forEach($scope.dateColumnList, function(column) {
+				if (column.path == $scope.data.max) {
+					$scope.data.maxformat = column.format;
+				}
+			});
+		};
+
+		//计算出bo的path
+		$scope.handlePath = function(relation) {
+			if (relation.type == "main") {
+				relation.path = "data." + $scope.bo.key;
+			}
+			if (relation.type == "oneToMany") {
+				relation.path = relation.tableKey;
+			}
+			if (relation.type == "oneToOne") {
+				relation.path = relation.parent.path + "." + relation.tableKey;
+			}
+			angular.forEach(relation.children, function(child) {
+				$scope.handlePath(child);
+			});
+		}
+	} ]);
+
+	//父页面打开按【确定】按钮时的回调函数
+	function getData() {
+		var scope = AngularUtil.getScope();
+		return scope.data;
+	}
+</script>
+</head>
+<body ng-controller="ctrl" ng-init="init()">
+	<form name="form">
+		<table class="form-table">
+			<tr>
+				<th>最小日期校验对比值</th>
+				<td>
+					<select class="form-control" ng-model="data.min" ng-change="minChange()" ng-options="m.path as m.desc for m in dateColumnList">
+						<option value="">请选择</option>
+					</select>
+					<span class="text-info" > 当前日期大于所选日期，若为空不校验</span>
+				</td>
+			</tr>
+			<tr>
+				<th>最大日期校验对比值</th>
+				<td>
+					<select class="form-control" ng-model="data.max" ng-change="maxChange()" ng-options="m.path as m.desc for m in dateColumnList">
+						<option value="">请选择</option>
+					</select>
+					<span class="text-info" > 当前日期小于该所选日期，若为空不校验</span>
+				</td>
+			</tr>
+			<tr ng-show="data.min">
+				<th>
+					日期计算赋值
+					<a href="javaScript:void(0)" style="text-decoration: none; color: red;" class="fa fa-exclamation-circle ab-help" ab-tip
+					title="请注意：请将日期计算配置在结束日期控件之上，<br> 最小日期校验也必须设置为计算的开始值<br> 然后选择合理计算单位，日期计算会将计算结果赋值给 设置的目标字段" > </a>
+				</th>
+				<td>
+					<select class="form-control" ng-model="data.cal" ng-options="m.path as m.desc for m in numberColumnList">
+						<option value="">请选择</option>
+					</select>
+					<span class="text-info" > 计算结果会赋值给所选字段 </span>
+				</td>
+			</tr>
+			<tr ng-show="data.min&&data.cal">
+				<th>计算单位</th>
+				<td>
+					<select class="form-control" ng-model="data.caltype">
+						<option value="">请选择计算类型</option>
+						<option value="date">日</option>
+						<option value="month">月</option>
+						<option value="year">年</option>
+						<option value="hour">小时</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>说明</th>
+				<td>
+					 <p class="text-danger">日期比较 ：以 “开始日期”，“结束日期”校验为例，“结束日期”控件之上可以配置 【最小日期校验对比值】 为“ 开始日期”字段 ，这样“结束日期”最小值会被“开始日期”所限制  </p>
+					 <p class="text-danger">日期计算： 1、计算从“最小时间”到“当前时间”的距离，2、日期计算必须配置在结束日期之上，3、最小日期校验字段不能为空，4、日期计算结果会赋值给配置的目标字段</p>
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<html ng-app="app">
+<head>
+<title>脚本选择器</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../../build/common/base.css" rel="stylesheet">
+<script type="text/javascript" src="../../build/common/base.js"></script>
+<script type="text/javascript" src="../../build/common/ngEdit.js"></script>
+
+<script type="text/javascript">
+
+	var app = angular.module('app', [ 'baseDirective']);
+	app.controller("ctrl", [ '$scope', 'baseService', function(scope, baseService) {
+		scope.variable = passData.variable;
+		scope.variableList = passData.variableList;
+		
+		
+		scope.valid = function(includeForm){
+			
+			if (!AngularUtil.getScope().form.$valid && includeForm){
+				$.Dialog.warning("表单校验未通过！");
+				return false;
+			}
+			if(scope.variable.isUpdate){
+				return true;
+			}
+			
+			for(var i=0,v;v=scope.variableList[i++];){
+				if(v.key==scope.variable.key){
+					$.Dialog.error("流程定义KEY必须在当前流程中唯一！");
+					return false
+				}
+			}
+			
+			return true;
+		}
+	} ]);
+	 
+	function getData(){
+		if(!AngularUtil.getScope().valid(true))return false;
+			
+		return AngularUtil.getScope().variable;
+	}
+	
+</script>
+</head>
+<body ng-controller="ctrl">
+  <form name="form">
+
+      <div class="form-horizontal">
+          <div class="form-group">
+              <label class="col-xs-3 control-label middle title"><span class="required">*</span>变量名:</label>
+              <div class="col-xs-9">
+                  <input type="text" ng-model="variable.name" class="form-control" ab-validate="{required:true,maxlength:192}" />
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-xs-3 control-label middle title"><span class="required">*</span>变量Key:</label>
+              <div class="col-xs-9">
+                  <input type="text" ng-blur="valid()" ng-readonly="variable.isUpdate" ng-model="variable.key" class="form-control" ab-validate="{required:true,maxlength:192}" />
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-xs-3 control-label middle title">数据类型:</label>
+              <div class="col-xs-9">
+                  <select ng-model="variable.dataType" class="form-control">
+                      <option value="string">字符串</option>
+                      <option value="int">整形</option>
+                      <option value="float">浮点型</option>
+                      <option value="double">双精度</option>
+                  </select>
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-xs-3 control-label middle title">是否必须:</label>
+              <div class="col-xs-9">
+                  <select ng-model=" variable.isRequired" class="form-control">
+                      <option value="true">是</option>
+                      <option value="false">否</option>
+                  </select>
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-xs-3 control-label middle title">缺省值:</label>
+              <div class="col-xs-9">
+                  <input type="text" ng-model="variable.defaultVal" class="form-control"/>
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-xs-3 control-label middle title">变量描述:</label>
+              <div class="col-xs-9">
+                  <textarea type="text" ng-model="variable.desc" class="form-control" ></textarea>
+              </div>
+          </div>
+      </div>
+	</form>
+</body>
+
+<style>
+    .form-horizontal {
+        padding-top: 20px;
+    }
+
+    .form-horizontal .control-label {
+        font-weight: normal;
+        text-align: right;
+        padding-top: 7px;
+    }
+
+    .required {
+        color: red;
+        margin-right: 5px;
+    }
+</style>
+
+</html>

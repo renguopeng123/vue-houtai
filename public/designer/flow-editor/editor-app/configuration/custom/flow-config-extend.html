@@ -1,0 +1,154 @@
+<div ng-controller="FlowConfController">
+    <!-- 全局，插件配置 -->
+
+    <!-- 节点表单初始化  -->
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-heading-title">
+                <div style="float:left; width: 90%;" onclick="panelCollapseOrExpand(this)">
+                    节点表单初始化<i class="panel-icon-custom panel-heading-collapse"></i>
+                </div>
+                <div>
+                    <i class="panel-icon-custom panel-heading-edit" ng-click="editNodeInit()"></i>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="node-users">
+                <div class="users" ng-repeat="nodeInit in nodeInitList track by $index">
+                    <div class="users-order">{{$index + 1}}</div>
+                    <div class="users-content">
+                        <p>{{bpmDefSetting.nodeMap[nodeInit.nodeId].nodeName}}</p>
+                        <p class="users-content-weak">{{nodeInit.desc}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 节点通知消息  -->
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-heading-title">
+                <div style="float:left; width: 90%;" onclick="panelCollapseOrExpand(this)">
+                    节点通知消息<i class="panel-icon-custom panel-heading-collapse"></i>
+                </div>
+                <div>
+                    <i class="panel-icon-custom panel-heading-add" ng-click="editNodeMessage()"></i>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="node-users">
+                <div class="users" ng-repeat="nodeMessage in nodeMessageList track by $index">
+                    <div class="users-content">
+                        <p>
+                            {{nodeMessage.nodeId ? bpmDefSetting.nodeMap[nodeMessage.nodeId].nodeName : '所有节点'}}
+                            <span class="users-content-weak">({{eventMap[nodeMessage.event]}})</span>
+                        </p>
+                        <p class="users-content-weak">{{nodeMessage.desc}}</p>
+                    </div>
+                    <div class="users-content-edit">
+                        <i class="panel-icon-custom panel-heading-edit" ng-click="editNodeMessage($index)"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 流程变量定义  -->
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-heading-title">
+                <div style="float:left; width: 90%;" onclick="panelCollapseOrExpand(this)">
+                    流程变量定义<i class="panel-icon-custom panel-heading-collapse"></i>
+                </div>
+                <div>
+                    <i class="panel-icon-custom panel-heading-add" ng-click="editVariable()"></i>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="node-users">
+                <div class="users" ng-repeat="var in variableList">
+                    <div class="users-content">
+                        <p>
+                            {{var.name}}:&nbsp;
+                            <span class="users-content-weak">{{var.key}}</span>
+                        </p>
+                        <p class="users-content-weak">{{var.desc}}</p>
+                    </div>
+                    <div class="users-content-edit">
+                        <i class="panel-icon-custom panel-heading-edit" ng-click="editVariable($index)"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 流程催办设置  -->
+    <div class="panel panel-primary" ng-show="pluginHasPermission('reminder')">
+        <div class="panel-heading">
+            <div class="panel-heading-title">
+                <div style="float:left; width: 90%;" onclick="panelCollapseOrExpand(this)">
+                    流程催办设置<i class="panel-icon-custom panel-heading-collapse"></i>
+                </div>
+                <div>
+                    <i class="panel-icon-custom panel-heading-edit" ng-click="editReminder()"></i>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="node-users">
+                <div class="users" ng-repeat="reminder in reminderList track by $index">
+                    <div class="users-order">{{$index + 1}}</div>
+                    <div class="users-content">
+                        <p>{{reminder.nodeId ? bpmDefSetting.nodeMap[reminder.nodeId].nodeName : '所有节点'}}</p>
+                        <p class="users-content-weak">{{reminder.desc}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 流程节点自动跳过 -->
+    <div class="panel panel-primary" ng-show="pluginHasPermission('reminder')">
+        <div class="panel-heading">
+            <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+                流程节点自动跳过<i class="panel-icon-custom panel-heading-collapse"></i>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="node-users">
+                <label class="checkbox-label" ng-class="{'checked' : taskSkip.skipTypeArr.indexOf('firstNodeSkip')!=-1}">
+                    <i class="panel-icon-custom editor-icon-checkbox"></i>
+                    <input type="checkbox" ab-checkbox="" ng-model="taskSkip.skipTypeArr" value="firstNodeSkip" >流程第一个节点跳过
+                </label><br/>
+                <label class="checkbox-label" ng-class="{'checked' : taskSkip.skipTypeArr.indexOf('sameUserSkip')!=-1}">
+                    <i class="panel-icon-custom editor-icon-checkbox"></i>
+                    <input type="checkbox" ab-checkbox="" ng-model="taskSkip.skipTypeArr" value="sameUserSkip" >下一节点执行人是当前任务处理人跳过
+                </label><br/>
+                <label class="checkbox-label" ng-class="{'checked' : taskSkip.skipTypeArr.indexOf('userEmptySkip')!=-1}">
+                    <i class="panel-icon-custom editor-icon-checkbox"></i>
+                    <input type="checkbox" ab-checkbox="" ng-model="taskSkip.skipTypeArr" value="userEmptySkip" >任务节点执行人为空跳过
+                </label><br/>
+                <label class="checkbox-label" ng-class="{'checked' : taskSkip.skipTypeArr.indexOf('allSkip')!=-1}">
+                    <i class="panel-icon-custom editor-icon-checkbox"></i>
+                    <input type="checkbox" ab-checkbox="" ng-model="taskSkip.skipTypeArr" value="allSkip" >所有节点跳过(用于流程测试)
+                </label><br/>
+                <label class="checkbox-label" ng-class="{'checked' : taskSkip.skipTypeArr.indexOf('scriptSkip')!=-1}">
+                    <i class="panel-icon-custom editor-icon-checkbox"></i>
+                    <input type="checkbox" ab-checkbox="" ng-model="taskSkip.skipTypeArr" value="scriptSkip">脚本跳过
+                </label><br/>
+                <div ng-if="taskSkip.skipTypeArr && taskSkip.skipTypeArr.indexOf('scriptSkip')!=-1" class="ng-scope">
+                    <textarea rows="6" cols="39" ng-model="taskSkip.script" class="form-control plugin-property-textarea"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,74 @@
+$navbarH: 36px;
+$offsetH: 37px;
+$leftSideBarW:190px;
+$rightPanelW:350px;
+$borderStyle:1px solid #dcdfe6;
+$labelColor:#909399;
+$fontSize:14px;
+
+//抽屉对话框的默认设置；
+.draw-container {
+  /deep/ .el-drawer__header {
+    margin-bottom: 0px;
+    padding: 10px 20px;
+  }
+}
+.draw-foot {
+  margin:10px;
+}
+.json-container {
+  height: calc(100vh - 100px);
+  overflow: auto;
+  position: relative;
+  border-top:$borderStyle;
+  border-bottom:$borderStyle;
+  //border:1px solid green;
+}
+
+.entity-table-property-header {
+  display: flex;
+  align-items:center;
+  align-content: center;
+  border-bottom: 1px solid #dcdfe6;
+  padding-bottom:8px;
+}
+
+.add-fields {
+  margin-left:auto;
+}
+.add-fields span {
+  cursor:pointer;
+}
+.add-fields .el-icon-plus {
+  color:green;
+  margin-right:10px;
+}
+
+.title {
+  margin-left:3px;
+  font-weight: 600;
+}
+
+.entity-field-body {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap:wrap;
+}
+
+//公共css
+.relation-dlg-common {
+  display: flex;
+  justify-content: space-between;
+  width:85%;
+  margin: 0 auto 10px auto;
+  .left {
+    width:190px;
+  }
+  .middle {
+    width:150px;
+  }
+  .right {
+    width:220px;
+    /*border:1px solid red;*/
+  }
+}

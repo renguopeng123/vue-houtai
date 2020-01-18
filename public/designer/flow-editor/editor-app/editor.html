@@ -1,0 +1,135 @@
+<div ng-controller="StencilController" style="width: 100%; height: 100%">
+
+    <!-- 顶部按钮 -->
+    <div class="toolbar">
+        <div class="editor-toolbar subheader">
+            <div class="btn-group">
+                <!-- 功能按钮，画布扩展按钮，画布收缩按钮 -->
+                <div class="btn-toolbar pull-left" ng-controller="ToolbarController" ng-cloak>
+                    <button id="{{item.id}}" title="{{item.title | translate}}" ng-repeat="item in items" ng-switch on="item.type" class="btn btn-inverse" ng-class="{'separator': item.type == 'separator'}"
+                            ng-disabled="item.type == 'separator' || item.enabled == false" ng-click="toolbarButtonClicked($index)">
+                        <i ng-switch-when="button" ng-class="item.cssClass" class="toolbar-button" data-toggle="tooltip" title="{{item.title | translate}}"></i>
+                        <div ng-switch-when="separator" ng-class="item.cssClass"></div>
+                    </button>
+                    <button title="{{item.title | translate}}" ng-repeat="item in shrinkAndArrowItems" ng-switch on="item.type" class="btn btn-inverse" ng-class="{'separator': item.type == 'separator'}"
+                            ng-disabled="item.type == 'separator' || item.enabled == false">
+                        <i ng-switch-when="button" ng-class="item.cssClass" class="toolbar-button" data-toggle="tooltip" title="{{item.title | translate}}" ng-click="canvasResize(item.direction)"></i>
+                        <div ng-switch-when="separator" ng-class="item.cssClass"></div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="btn-group pull-right" ng-show="false && !secondaryItems.length">
+                <div class="btn-toolbar pull-right" ng-controller="ToolbarController">
+                    <!-- 关闭按钮 -->
+                    <button id="{{item.id}}" title="{{item.title | translate}}" ng-repeat="item in secondaryItems" ng-switch on="item.type" class="btn btn-inverse"
+                            ng-class="{'separator': item.type == 'separator'}" ng-disabled="item.type == 'separator'" ng-click="toolbarSecondaryButtonClicked($index)">
+                        <i ng-switch-when="button" ng-class="item.cssClass" class="toolbar-button" data-toggle="tooltip" title="{{item.title | translate}}"></i>
+                        <div ng-switch-when="separator" ng-class="item.cssClass"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 流程节点 -->
+    <div class="flow-node-hide">
+        <div class="flow-node-tab">
+            <li class="icon" onclick="flowNodeCollapseOrExpand()"><i class="panel-icon-custom layout-button-right"></i></li>
+        </div>
+    </div>
+    <div class="flow-node">
+        <div class="flow-node-tab">
+            <ul class="nav nav-pills">
+                <li class="active"><a href="javascript:void(0)">流程节点</a></li>
+                <li class="icon" onclick="flowNodeCollapseOrExpand()"><i class="panel-icon-custom layout-button-left"></i></li>
+            </ul>
+        </div>
+        <div class="stencils" id="paletteSection">
+            <div ng-if="stencilItemGroups.length > 1">
+                <div ng-repeat="group in stencilItemGroups">
+                    <ul ng-if="group.visible && group.items" class="stencil-group" ng-class="{collapsed: !group.expanded, 'first': $first}">
+                        <li ng-include="'editor-app/partials/stencil-item-template.html?version=4'"></li>
+                    </ul>
+                    <div ng-if="!group.items" ng-include="'editor-app/partials/root-stencil-item-template.html?version=4'"></div>
+                </div>
+            </div>
+            <div ng-if="stencilItemGroups.length == 1">
+                <ul class="stencil-group">
+                    <li ng-repeat="item in stencilItemGroups[0].paletteItems" class="stencil-item" id="{{item.id}}" title="{{item.description}}" ng-model="draggedElement" data-drag="true"
+                        jqyoui-draggable="{onStart:'startDragCallback', onDrag:'dragCallback'}" data-jqyoui-options="{revert: 'invalid', helper: 'clone', opacity : 0.5}">
+                        <img ng-src="editor-app/stencilsets/bpmn2.0/icons/{{item.icon}}" width="16px;" height="16px;"/>
+                        {{item.name}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 画布 -->
+    <div class="flow-center flow-center-left1">
+        <div id="flowDesigner" class="flow-designer flow-designer-width1">
+            <div class="canvas-wrapper" id="canvasSection" ng-model="droppedElement" ng-model="droppedElement" data-drop="true" data-jqyoui-options
+                 jqyoui-droppable="{onDrop:'dropCallback',onOver: 'overCallback', onOut: 'outCallback'}">
+                <div class="canvas-message" id="model-modified-date"></div>
+                <div class="Oryx_button" id="delete-button" title="{{'BUTTON.ACTION.DELETE.TOOLTIP' | translate}}" ng-click="deleteShape()" style="display: none">
+                    <img src="editor-app/images/delete.png"/>
+                </div>
+                <div class="Oryx_button" id="morph-button" title="{{'BUTTON.ACTION.MORPH.TOOLTIP' | translate}}" ng-click="morphShape()" style="display: none">
+                    <img src="editor-app/images/wrench.png"/>
+                </div>
+                <div class="Oryx_button" ng-repeat="item in quickMenuItems" id="{{item.id}}" title="{{item.description}}" ng-click="quickAddItem(item.id)" ng-model="draggedElement"
+                     data-drag="true" jqyoui-draggable="{onStart:'startDragCallbackQuickMenu', onDrag:'dragCallbackQuickMenu'}"
+                     data-jqyoui-options="{revert: 'invalid', helper: 'clone', opacity : 0.5}" style="display: none">
+                    <img ng-src="editor-app/stencilsets/bpmn2.0/icons/{{item.icon}}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 属性配置，事件配置 -->
+    <div class="properties">
+        <div class="properties-tab">
+            <ul class="nav nav-pills">
+                <li class="active"><a role="tab" data-toggle="tab" href="#config">属性配置</a></li>
+                <li><a role="tab" data-toggle="tab" href="#event">事件配置</a></li>
+            </ul>
+        </div>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="config">
+                <!-- 基础属性 -->
+                <ng-include src="'editor-app/configuration/custom/basic-config.html'"></ng-include>
+
+                <!-- 流程属性 -->
+                <div ng-if="selectedItem.nodeType=='Global'">
+                    <ng-include src="'editor-app/configuration/custom/flow-config.html'"></ng-include>
+                </div>
+
+                <!-- 用户任务节点，节点属性 -->
+                <div ng-if="isUserTaskNode()">
+                    <ng-include src="'editor-app/configuration/custom/node-config.html'"></ng-include>
+                </div>
+
+                <!-- 网关节点，节点属性 -->
+                <div ng-if="selectedItem.nodeType=='InclusiveGateway' || selectedItem.nodeType=='ExclusiveGateway'">
+                    <ng-include src="'editor-app/configuration/custom/inclusive-conditions.html'"></ng-include>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="event">
+                <!-- 流程插件 -->
+                <div ng-model="permissionPlugins"
+                     ab-load="sys/tools/getInterFaceImpls?classPath=cn.gwssi.ecloudbpm.bpm.engine.plugin.context.AbstractBpmPluginContext"
+                     simple-data="true"></div>
+                <div ng-if="selectedItem.nodeType=='Global'">
+                    <ng-include src="'editor-app/configuration/custom/flow-config-extend.html'" style="height:100%"></ng-include>
+                </div>
+                <div ng-if="selectedItem && selectedItem.nodeId && selectedItem.nodeType!=='Global'">
+                    <ng-include src="'editor-app/configuration/custom/flow-plugins.html'" style="height:100%"></ng-include>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

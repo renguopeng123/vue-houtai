@@ -1,0 +1,223 @@
+<html ng-app="app">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="../../../build/common/base.css" rel="stylesheet">
+    <script type="text/javascript" src="../../../build/common/base.js"></script>
+    <script type="text/javascript" src="../../../build/common/ngEdit.js"></script>
+
+    <script type="text/javascript">
+        var app = angular.module('app', [ 'baseDirective' ]);
+        app.controller("ctrl", [ '$scope', 'baseService', 'ArrayToolService', function($scope, baseService, ArrayToolService) {
+            $scope.ArrayTool = ArrayToolService;
+            $scope.boCode = window.passData.parentScope.data.boKey;
+            var currentSubTableName = window.passData.tableKey;
+            $scope.temp = {};
+            $scope.init = function() {
+                $scope.data = {};
+                $scope.data.mapList = [];
+
+               var script =  window.passData.scirpt || "";
+               var decimals = window.passData.decimals || 2;
+                $scope.data.script = script;
+                $scope.data.decimals = decimals;
+
+                //获取bo信息
+                var url = __ctx + "/bus/businessObject/getObject";
+                var defer = baseService.postForm(url, {
+                    key : $scope.boCode ,
+                    fill : true
+                });
+                $.getResultData(defer, function(data){
+                    $scope.bo = data;
+                    $scope.ngModelPathList = [];
+                    $scope.initngModelPathList();
+                }, null, true);
+            };
+
+            /***
+            	get 类型支持获取值
+            	statistics 
+            	all
+            **/
+            $scope.initngModelPathList = function() {
+                if(!$scope.bo){
+                    return [];
+                }
+                $scope.ngModelPathList = [];
+
+                var mainTable =$scope.bo.relation.table;
+                mainTable.support = "get";
+                mainTable.path = "data."+$scope.boCode;
+                $scope.ngModelPathList.push(mainTable);
+                for(var i=0,child;child=$scope.bo.relation.children[i++];){
+                    var subTable = child.table;
+                    // 一对多第二层
+                    if(child.type === "oneToMany"){
+                        if(currentSubTableName === child.tableKey){
+                            subTable.support = "all";
+                            subTable.path = child.tableKey;
+                        }else{
+                        	subTable.support = "statistics";
+                        }
+                        subTable.statisticsPath = "data."+$scope.boCode+"."+child.tableKey+"List";
+                    }else{
+                        subTable.support = "get";
+                        subTable.path = "data."+$scope.boCode+"."+child.tableKey
+                    }
+                    $scope.ngModelPathList.push(subTable);
+
+                    setThreeChildTablePath(child.children,subTable.path);
+                }
+                console.info($scope.ngModelPathList);
+            };
+            // 第三层往后，均不在支持一对一的主表设值
+            function setThreeChildTablePath(children,parentPath){
+                if(!children || children.length==0)return ;
+                for(var i=0,child;child=children[i++];){
+                    var subTable = child.table;
+                    // 一对多第二层
+                    if(child.type === "oneToMany"){
+                        if(currentSubTableName === child.tableKey){
+                            subTable.support = "all";
+                            subTable.path = child.tableKey;
+                        }else{
+                        	subTable.support = "statistics";
+                        }
+                        
+	                    subTable.statisticsPath = $scope.getParentFullPath(child.parent) +"."+child.tableKey+"List";
+                    }else{
+                    	subTable.support = "get";
+                        subTable.path =  child.tableKey;
+                        if(currentSubTableName == child.parent.tableKey){
+                            subTable.path = parentPath + "." + child.tableKey;
+                        }
+                    }
+                    //在改作用域则添加进可用path列表
+                    if(currentSubTableName === child.parent.tableKey || currentSubTableName === child.tableKey){
+                        $scope.ngModelPathList.push(subTable);
+                    }
+
+                    setThreeChildTablePath(child.children,subTable.path);
+                }
+            }
+            $scope.getParentFullPath = function(parent){
+            	if(parent.type==="oneToMany"){
+            		return parent.tableKey;
+            	}else if (parent.type==="main"){
+            		return  "data."+$scope.boCode;
+            	}
+            	
+            	var parentPath =  $scope.getParentFullPath(parent.parent);
+            	return parentPath + "." + parent.tableKey;
+            },
+			
+            $scope.selectChange = function(table,type){
+            	// 普通赋值
+            	var code;
+            	if(type === "get"){
+            		code = "abGetNumber("+ table.path +"."+ $scope.temp.columKey + ")";
+            	}else if(type === "avg"){
+            		code = "abSubAvg("+table.statisticsPath+",'"+$scope.temp.columKey+"')";
+            	}else if (type === "sum"){
+            		code = "abSubSum("+table.statisticsPath+",'"+$scope.temp.columKey+"')";
+            	}
+            	$scope.data.script =  ($scope.data.script || "") + " " + code  + " ";
+            	$scope.temp.columKey = "";
+            }
+            
+            $scope.addScriptData = function(key){
+            	if(!key) return;
+            	$scope.data.script = ($scope.data.script || "") + " " + key  + " ";
+            }
+
+        } ]);
+
+        //父页面打开按【确定】按钮时的回调函数
+        function getData() {
+            var scope = AngularUtil.getScope();
+            return  scope.data ;
+        }
+    </script>
+</head>
+<body ng-controller="ctrl" ng-init="init()">
+<form name="form">
+    <table class="form-table">
+        <tr>
+            <th>案例脚本</th>
+            <td>
+                <span class="text-success"> 求班级的平均值：对 class.avgGrade 控件配置 abSubAvg(class.studentList,"greade")</span><br>
+                <span class="text-success"> 求班级的总成绩：对 class.sumGrade 控件配置 abSubSum(class.studentList,"greade")</span><br>
+                <span class="text-success"> 求个人的总成绩：对 student.sumGrade 控件配置 student.grade1 + student.grade2 + student.grade3 </span><br>
+                <span class="text-info">说明：计算会在组件 update 时机进行计算，计算后赋值给当前指令对应的input 框。  并不是 watch 所有相关变量的形式，但只要是合理的公式，就不会有什么性能影响</span>
+            </td>
+        </tr>
+	     <tr>
+	        <th>运算符</th>
+	        <td>
+	            <a class="btn btn-default" href="#" ab-tip title="加" ng-click="addScriptData('+')"> + </a>
+	            <a class="btn btn-default" href="#" ab-tip title="减" ng-click="addScriptData('-')"> - </a>
+	            <a class="btn btn-default" href="#" ab-tip title="乘" ng-click="addScriptData('*')"> * </a>
+	            <a class="btn btn-default" href="#" ab-tip title="除" ng-click="addScriptData('/')"> / </a>
+	            <a class="btn btn-default" href="#" ab-tip title="括号" ng-click="addScriptData('(')"> ( </a>
+	            <a class="btn btn-default" href="#" ab-tip title="括号" ng-click="addScriptData(')')"> ) </a>
+	        </td>
+	    </tr>
+		<tr>
+			<th>计算保留小数位</th>
+			<td>
+				<input ng-model="data.decimals" class="form-control" >
+			</td>
+		</tr>
+	        <tr>
+	            <th>字段取值
+	                <span class="fa fa-question-circle text-info" ab-tip title="从实体中选择一个字段作为计算值"></span>
+	            </th>
+	            <td>
+	            	<table class=" table-condensed" style="margin-bottom: 0px">
+						<tr>
+							<th class="col-xs-4">字段值</th>
+		  					<th class="col-xs-4">子表合计值</th>
+		  					<th class="col-xs-4">子表平均值</th>
+						</tr>
+						<tr>
+							<td>
+								 <span ng-repeat="table in ngModelPathList" ng-if="table.support!='statistics'" class="col-md-4">
+			                        <select class="form-control" ng-model="temp.columKey" ng-change="selectChange(table,'get')"
+			                        		ng-options="coloum.key as coloum.comment for coloum in table.columns | filter: {type: 'number'}">
+										<option value=""> {{table.comment}} 字段选择</option>
+			                        </select>
+					              </span>
+							</td>
+							<td>
+								<span ng-repeat="table in ngModelPathList" ng-if="table.support!='get'"  >
+								<select class="form-control" ng-model="temp.columKey" ng-change="selectChange(table,'sum')"
+										ng-options="coloum.key as coloum.comment for coloum in table.columns | filter: {type: 'number'}">>
+									<option value=""> {{table.comment}} 合计</option>
+		                        </select>
+		                        </span>
+							</td>
+							<td> 
+								<span ng-repeat="table in ngModelPathList" ng-if="table.support!='get'"  >
+								<select class="form-control" ng-model="temp.columKey" ng-change="selectChange(table,'avg')"
+										ng-options="coloum.key as coloum.comment for coloum in table.columns | filter: {type: 'number'}">
+									<option value=""> {{table.comment}} 平均值</option>
+		                        </select>
+		                        </span>
+							</td>
+
+						</tr>
+					</table>
+	            </td>
+	        </tr>
+        <tr>
+            <th>脚本</th>
+            <td>
+                <textarea ng-model="data.script" cols="80" rows="5">
+                </textarea>
+            </td>
+        </tr>
+        <tr>
+    </table>
+</form>
+</body>
+</html>

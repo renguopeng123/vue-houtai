@@ -1,0 +1,95 @@
+<html ng-app="app">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../../build/common/base.css" rel="stylesheet">
+<link href="../../build/common/codeMirror.css" rel="stylesheet">
+<link href="../custom/css/style.css" rel="stylesheet">
+<script type="text/javascript" src="../../build/common/base.js"></script>
+<script type="text/javascript" src="../../build/common/ngEdit.js"></script>
+<script type="text/javascript" src="../../build/common/codeMirror.js"></script>
+<script type="text/javascript" src="../../assets/js/platform/bus/businessPermission/businessPermissionEditController2.js"></script>
+<script type="text/javascript" src="../../assets/js/platform/bus/businessObject/editAndDialogCommon.js"></script>
+<script type="text/javascript" src="../../assets/custom/js/dialog-conf.js"></script>
+<script type="text/javascript">
+	
+</script>
+</head>
+<body ng-controller="ctrl" ng-init="init()">
+
+    <div class="form-horizontal auth-view">
+        <div class="form-group" ng-repeat="permission in dialogPermissions">
+            <div class="col-xs-1 control-label title">{{permission.title}}:</div>
+            <div class="col-xs-10 selected-label">
+                <label class="label label-default" ng-repeat="item in currentAuth[permission.type]">{{item.name}}</label>
+            </div>
+            <div class="col-xs-1 text-left">
+                <a class="btn btn-primary" href="javaScript:void(0)" ng-click="selectAuth(permission)">+</a>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-1 control-label title" title="java脚本执行返回boolean值；例如：return true;">脚本:</div>
+            <div class="col-xs-10 no-padding">
+                <textarea ng-model="currentAuthScript" ui-codemirror="" height="120px"></textarea>
+            </div>
+            <div class="col-xs-1 text-left"></div>
+        </div>
+    </div>
+    <div class="form-horizontal auth-btn">
+        <div class="col-xs-2 control-label title">业务对象授权</div>
+        <div class="col-xs-10 text-right">
+            授权操作：
+            <button class="btn btn-default" ng-class="{'checked': currentAuthLevel == 'b'}" ng-click="setAuthLevel('b')"><i class="editor-icon editor-icon-star"></i>必填</button>
+            <button class="btn btn-default" ng-class="{'checked': currentAuthLevel == 'w'}" ng-click="setAuthLevel('w')"><i class="editor-icon editor-icon-edit"></i>编辑</button>
+            <button class="btn btn-default" ng-class="{'checked': currentAuthLevel == 'r'}" ng-click="setAuthLevel('r')"><i class="editor-icon editor-icon-readonly"></i>只读</button>
+            <button class="btn btn-default" ng-class="{'checked': currentAuthLevel == 'h'}" ng-click="setAuthLevel('h')"><i class="editor-icon editor-icon-hidden"></i>隐藏</button>
+        </div>
+    </div>
+
+
+    <form name="form" ab-load="/bus/businessPermission/getObject?objType={objType}&objVal={objVal}" ng-model="data">
+
+        <!-- BO -->
+        <div ng-repeat="view in boMap">
+            <div class="form-horizontal auth-global">
+                <div class="auth-check" ng-class="{'checked' : view.isChecked}" ng-click="toggleNodeCheck(view)">
+                    <i class="editor-icon editor-icon-checkbox"></i>&nbsp;&nbsp;BO----{{view.name}}({{view.key}})
+                    <i class="editor-icon editor-icon-star pull-right"></i>
+                </div>
+            </div>
+
+            <!-- 表 -->
+            <div class="form-horizontal" ng-repeat="relation in view.allRelations">
+                <div class="auth-global">
+                    <div class="auth-expand auth-placeholder"></div>
+                    <div class="auth-check auth-check-table" ng-class="{'checked' : relation.isChecked}" ng-click="toggleNodeCheck(relation)">
+                        <i class="editor-icon editor-icon-checkbox"></i>
+                            {{BusTableRelTypeKeyMap[relation.type].desc}}----{{relation.tableComment}}[{{relation.tableKey}}]
+                        <i class="editor-icon editor-icon-star pull-right"></i>
+                    </div>
+                    <div class="auth-expand text-right" ng-class="{'checked' : relation.table.showFields}" ng-click="toggleShowFields(relation.table)">
+                        <i class="editor-icon editor-icon-chevron"></i>
+                    </div>
+                </div>
+
+                <!-- 字段 -->
+                <div class="auth-fields" ng-show="relation.table.showFields">
+                    <label class="label label-field" ng-class="{'checked' : column.isChecked}"
+                           ng-repeat="column in relation.table.columnsWithoutPk" ng-click="toggleNodeCheck(column)">
+                        <i class="editor-icon editor-icon-checkbox"></i>
+                            {{column.comment}}[{{column.key}}]&nbsp;&nbsp;
+                        <i class="editor-icon editor-icon-star"></i>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="auth-footer">
+        <a class="btn btn-primary" href="javaScript:void(0)" ng-click="changeAuth()">保存</a>
+        <div class="line"></div>
+        <a class="btn btn-info" href="javaScript:void(0)" ng-model="data" ab-save="/bus/businessPermission/save">确定</a>
+        <a class="btn btn-default" href="javaScript:void(0)" ng-click="">取消</a>
+    </div>
+
+</body>
+</html>

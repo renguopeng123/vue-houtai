@@ -1,0 +1,9 @@
+.scrollbar-style {
+  height: 100%;
+  /deep/ .el-scrollbar__wrap {
+    overflow-x: hidden;
+  }
+  /deep/ .el-scrollbar__view {
+    height:100%;
+  }
+}

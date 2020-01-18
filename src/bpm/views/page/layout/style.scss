@@ -1,0 +1,30 @@
+$navbarH: 45px;
+$offsetH: 46px;
+$barWidth: 220px;
+$side-background-color: #F5F7FA;
+$border-bg-color: #e6e6e6;
+.app-form-wrapper-19 {
+    .el-menu {
+        background-color: #{$side-background-color};
+    }
+    .el-menu-item {
+        background: none !important;
+    }
+    .el-menu-item.is-active {
+        cursor: auto;
+    }
+    .el-submenu .el-menu-item,
+    .el-submenu__title {
+        height: 45px;
+        line-height: 45px;
+    }
+    .el-scrollbar {
+        height: calc(100% - #{$offsetH});
+        .scrollbar-wrapper {
+            overflow-x: hidden !important;
+            .el-scrollbar__view {
+                height: 100%;
+            }
+        }
+    }
+}

@@ -1,0 +1,134 @@
+<html ng-app="app">
+<head>
+    <link href="../../build/common/base.css" rel="stylesheet">
+    <link href="../../build/common/codeMirror.css" rel="stylesheet">
+    <link href="../../assets/custom/css/batchOperationDialog.css" rel="stylesheet">
+    <link href="../../assets/custom/css/userConditionDialog.css" rel="stylesheet">
+    <script type="text/javascript" src="../../build/common/base.js"></script>
+    <script type="text/javascript" src="../../build/common/ngEdit-ori.js"></script>
+    <script type="text/javascript" src="../../build/common/codeMirror.js"></script>
+    <script type="text/javascript" src="../../assets/js/platform/bpm/nodeDef/userConditionController.js"></script>
+</head>
+<body ng-controller="userConditionCtrl">
+<!-- 左侧 tab -->
+<div class="vertical-tab pull-left">
+    <div class="dashed-line pull-left"></div>
+    <div class="vertical-tab-container pull-left">
+        <ul class="nav nav-stacked">
+            <li ng-repeat="condition in userConditions track by $index" ng-class="{'current': $index === selectedIndex}">
+                <div class="vertical-tab-content">
+                    <div class="tab-order pull-left">{{$index + 1}}</div>
+                    <div class="tab-title pull-left" ng-click="toggleCondition($index)">
+                        <div class="tab-title-order pull-left">{{$index + 1}}</div>
+                        <!--<div class="tab-title-content pull-left">
+                            {{condition.description}}
+                        </div>-->
+                    </div>
+                </div>
+            </li>
+            <li class="tab-add">
+                <div class="vertical-tab-content">
+                    <div class="tab-order pull-left" ng-click="addCondition()">+</div>
+                    <!--<div class="tab-add-btn pull-right" ng-click="addCondition()">
+                        新增一条
+                    </div>-->
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- 右侧内容 -->
+<div class="user-content pull-right">
+    <div class="btns">
+        <span class="btn btn-info" ng-disabled="selectedIndex === -1" ng-click="moveUp()">上移</span>
+        <span class="btn btn-info" ng-disabled="selectedIndex === -1" ng-click="moveDown()">下移</span>
+        <span class="btn btn-danger" ng-disabled="selectedIndex === -1" ng-click="moveDel()">删除</span>
+        <span class="btn btn-primary pull-right" ng-disabled="selectedIndex === -1" ng-click="saveModel()">保存</span>
+        <span class="btn btn-success pull-right" ng-disabled="selectedIndex === -1" ng-click="addCalc()" style="margin-right: 10px;">添加</span>
+    </div>
+
+    <div class="user-select">
+
+        <!-- 人员条件 -->
+        <div class="script-condition">
+            <div class="script-title">人员条件</div>
+            <div class="script-btn">
+                <div select-script def-id="{{defId}}" broadcast-string="script" text="此脚本为Groove脚本!脚本返回 boolean 值，若返回false则不会进行使用该人员条件配置"></div>
+                <div id="tempTree"></div>
+            </div>
+            <div class="script-code">
+                <textarea ng-model="userCondition.condition" ui-codemirror="" width="90%" height="60px" broadcast="script"></textarea>
+            </div>
+        </div>
+
+        <!-- 人员设置 -->
+        <div class="user-details">
+            <div class="detail-row">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-2"><span>人员类型</span></div>
+                <div class="col-xs-3"><span>人员选择</span></div>
+                <div class="col-xs-2">
+                    <span class="fa fa-question-circle text-info" ab-tip
+                          title="若人员为组类型，抽取，任务候选人为当前组所有人。若不抽取。则候选人为组，不具体到人。<br>
+                          eg:如果某岗位，抽取。则候选人在任务产生时获取该岗位所有人作为候选人。若不抽取，则候选人为该岗位，任务产生后该岗位人员发生变动不受影响"></span>
+                    抽取
+                </div>
+                <div class="col-xs-2">
+                    <span class="fa fa-question-circle text-info" ab-tip
+                          title="与前一列进行运算，eg:且，则说明与前一列共有的人员才会作为任务候选人"></span>
+                    运算
+                </div>
+                <div class="col-xs-2"><span>操作</span></div>
+            </div>
+            <div class="detail-row" ng-repeat="calc in userCondition.calcs track by $index">
+                <div class="col-xs-1 user-details-order">{{$index + 1}}</div>
+                <div class="col-xs-2">
+                    <select id="select{{$index}}" ng-model="calc.pluginType"
+                            ng-options="m.type as m.title for m in nodeUserPluginList" class="form-control"
+                            ng-change="calcTypeChange(calc)">
+                    </select>
+                </div>
+                <div class="col-xs-3">
+                    <!--<a ng-show="'approver,sameNode'.indexOf(calc.pluginType)==-1" href="javascript:javaScript:void(0)"
+                       class="btn btn-xs {{calc.description?'btn-info':'btn-danger'}}"
+                       ng-click="selector(calc)">选择</a>-->
+                    <input type="text" readonly class="detail-row-input" title="{{calc.description}}"
+                       ng-show="'approver,sameNode'.indexOf(calc.pluginType)==-1" ng-click="selector(calc)"
+                       value="{{calc.description && calc.pluginType!='sameNode' ? calc.description : '请选择'}}"/>
+
+                    <select ng-if="calc.pluginType=='sameNode'" ng-model="calc.nodeId" class="form-control" ng-options="node.nodeId as node.nodeName for node in nodeList">
+                        <option value="">请选择</option>
+                    </select>
+                    <!--<span ng-if="calc.description && calc.pluginType!='sameNode'">[{{calc.description}}]</span>-->
+                </div>
+                <div class="col-xs-2">
+                    <select ng-show="'approver,sameNode,user'.indexOf(calc.pluginType)==-1" ng-model="calc.extract"
+                            class="form-control">
+                        <option value="no">不抽取</option>
+                        <option value="extract">抽取</option>
+                    </select>
+                </div>
+                <div class="col-xs-2">
+                    <select ng-show="!$first" ng-model="calc.logicCal" class="form-control">
+                        <option value='or'>或</option>
+                        <option value='and'>与</option>
+                        <option value='exclude'>排除</option>
+                    </select></div>
+                <div class="col-xs-2">
+                    <a href="javascript:javaScript:void(0)" ng-click="ArrayTool.up($index,userCondition.calcs)">
+                        <i class="icon-custom icon-arrow-up"></i>
+                    </a>
+                    <a href="javascript:javaScript:void(0)" ng-click="ArrayTool.down($index,userCondition.calcs)">
+                        <i class="icon-custom icon-arrow-down"></i>
+                    </a>
+                    <a href="javascript:javaScript:void(0)" ng-click="ArrayTool.del($index,userCondition.calcs)">
+                        <i class="icon-custom icon-delete"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

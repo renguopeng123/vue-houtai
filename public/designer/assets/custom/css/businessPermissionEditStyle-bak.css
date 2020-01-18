@@ -1,0 +1,212 @@
+/***************************** 模态框 *****************************/
+
+body {
+    padding: 0 10px;
+}
+
+.auth-view {
+    padding: 10px 20px;
+}
+
+.auth-view .form-group {
+    margin-bottom: 10px;
+}
+
+.auth-view .title {
+    font-weight: 700;
+}
+
+.auth-view .selected-label {
+    border: 1px solid #ddd;
+    min-height: 35px;
+    height: auto;
+    padding: 2px;
+}
+
+.selected-label .label-default {
+    background-color: #F1F2F6;
+    font-weight: normal;
+    display: inline-block;
+    margin: 2px 5px 0 0;
+    font-size: 14px;
+    padding: 5px 8px;
+}
+
+.auth-view .btn {
+    font-size: 30px;
+    padding: 0;
+    height: 32px;
+    width: 32px;
+}
+
+.auth-view .btn-primary {
+    background-color: #67C239;
+    border-color: #67C239;
+}
+
+.auth-btn {
+    border-bottom: 1px solid #ddd;
+    height: 35px;
+    margin-bottom: 15px;
+}
+
+.auth-btn .title {
+    text-align: left;
+}
+
+.auth-btn .btn-default.checked {
+    background-color: #fff;
+    color: #409EFF;
+    border-color: #409EFF;
+}
+
+.auth-btn .btn-default.checked .editor-icon {
+    color: #409EFF;
+}
+
+.auth-global {
+    height: 30px;
+    margin: 10px 5px;
+    font-size: 14px;
+}
+
+.auth-expand {
+    height: 30px;
+    padding: 5px 15px;
+    width: 5%;
+    float: left;
+}
+
+.auth-check {
+    height: 30px;
+    padding: 5px 15px;
+    background-color: #F3F6FD;
+    width: 95%;
+    float: left;
+}
+
+.auth-placeholder {
+    width: 2%;
+    padding: 0;
+}
+
+.auth-check-table {
+    width: 93%;
+}
+
+.auth-check.checked {
+    border: 1px solid #409EFF;
+    color: #409EFF;
+}
+
+.auth-check.checked .editor-icon {
+    color: #409EFF;
+}
+
+.auth-fields {
+    padding: 0 40px 10px;
+}
+
+.label-field {
+    font-size: 14px;
+    padding: 7px;
+    font-weight: normal;
+    background-color: transparent;
+    border: 1px solid #ddd;
+    margin: 5px;
+    display: inline-block;
+}
+
+.label-field.checked {
+    border-color: #409EFF;
+
+}
+
+.label-field.checked .editor-icon {
+    color: #409EFF;
+}
+
+.auth-footer {
+    margin: 10px 0 0;
+    padding: 10px 0;
+    height: 40px;
+    border-top: 1px solid #ddd;
+}
+
+.auth-footer .btn {
+    margin: 0 5px;
+    padding: 6px 20px;
+}
+
+.auth-footer .btn-primary {
+    background-color: #67C239;
+    border-color: #67C239;
+}
+
+.auth-footer .btn-info {
+    background-color: #409EFF;
+    border-color: #409EFF;
+}
+
+.auth-footer .line {
+    display: inline-block;
+    width: 1px;
+    height: 23px;
+    margin-bottom: -8px;
+    border-right: 1px dashed #ddd;
+}
+
+/***************************** 图标 *****************************/
+
+@font-face {
+    font-family: 'ActivitiModeler';
+    src: url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.eot');
+    src: url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.eot?#iefix') format('embedded-opentype'),
+    url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.woff') format('woff'),
+    url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.ttf') format('truetype'),
+    url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.svg#ActivitiModeler') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.editor-icon {
+    font-family: 'ActivitiModeler';
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    color: #999;
+    background: none;
+    padding: 0 5px 0 0;
+}
+
+.editor-icon-edit:before {
+    content: "\e61c";
+}
+
+.editor-icon-star:before {
+    content: "\e621";
+}
+
+.editor-icon-readonly:before {
+    content: "\e622";
+}
+
+.editor-icon-hidden:before {
+    content: "\e623";
+}
+
+.editor-icon-chevron:before {
+    content: "\e613";
+}
+
+.checked .editor-icon-chevron:before {
+    content: "\e614";
+}
+
+.editor-icon-checkbox:before {
+    content: "\e600";
+}
+
+.checked .editor-icon-checkbox:before {
+    content: "\e671";
+}

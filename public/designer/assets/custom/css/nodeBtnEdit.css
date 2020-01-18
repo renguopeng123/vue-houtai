@@ -1,0 +1,112 @@
+.btns {
+    height: 50px;
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0;
+}
+
+.btn-success,
+.btn-success[disabled],
+.btn-success[disabled]:hover {
+    background-color: #F1F9EC;
+    border-color: #C2E7B1;
+    color: #67C13B;
+}
+
+.btns-details {
+    width: 450px;
+    padding: 0 10px;
+    height: 100%;
+    overflow: auto;
+}
+
+.btns-property {
+    width: 340px;
+    height: 100%;
+    padding: 0 10px;
+    border-left:1px solid #ddd;
+}
+
+.col-xs-1, .col-xs-2, .col-xs-3 {
+    padding: 0 5px;
+}
+
+.detail-row {
+    font-size: 14px;
+    padding: 10px;
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+}
+
+.detail-row span,
+.detail-row a {
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+}
+
+.form-horizontal {
+    padding-top: 20px;
+}
+
+.form-horizontal .control-label {
+    font-weight: normal;
+    text-align: right;
+    padding-top: 7px;
+}
+
+.required {
+    color: red;
+    margin-right: 5px;
+}
+
+.form-horizontal input,
+.form-horizontal input.ng-valid,
+.form-horizontal textarea,
+.form-horizontal textarea.ng-valid,
+.form-control,
+.form-control:focus {
+    border-color: #ddd !important;
+}
+
+.btn-status {
+    display: inline-block;
+    padding-top: 7px;
+}
+
+/************************************字体图标***********************************/
+@font-face {
+    font-family: 'ActivitiModeler';
+    src: url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.eot');
+    src: url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.eot?#iefix') format('embedded-opentype'),
+    url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.woff') format('woff'),
+    url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.ttf') format('truetype'),
+    url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.svg#ActivitiModeler') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icon-custom {
+    font-family: 'ActivitiModeler';
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    background: none;
+    padding: 5px;
+}
+
+.icon-delete:before {
+    color: #F46C6C;
+    content: "\e607";
+}
+
+.icon-arrow-down:before {
+    color: #0081FF;
+    content: "\e604";
+}
+
+.icon-arrow-up:before {
+    color: #0081FF;
+    content: "\e610";
+}

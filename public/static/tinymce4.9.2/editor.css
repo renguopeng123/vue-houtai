@@ -1,0 +1,113 @@
+/* 基本样式 */
+
+.gw-components {
+    width: auto;
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    color: #333;
+    text-shadow: 0.1em 0.1em #ffffff;
+    padding: 6px;
+    margin: 6px;
+    font-size: 12px;
+    background-color: #ddd;
+    background-image: linear-gradient(#E8E8E8 1px, transparent 0), linear-gradient(90deg, #E8E8E8 1px, transparent 0);
+    background-size: 5px 5px, 5px 5px;
+    box-shadow: 0.1em 0.1em #999;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+gw-text .iconfont {
+    font-size: 14px !important;
+    margin-right: 6px;
+}
+
+gw-text {
+    padding-bottom: 2px;
+    border-bottom: 1px dotted #333;
+}
+
+
+/* 获取焦点样式 单选的时候*/
+
+.gw-components:hover {
+    border: 1px solid #333;
+}
+
+.gw-components:focus {
+    border: 1px solid #333;
+    box-shadow: 0.2em 0.2em #333;
+}
+
+.gw-components:blur {
+    border: 1px solid #ccc;
+    box-shadow: 0.1em 0.1em #999;
+}
+
+
+/* 双击后文字选中效果 主要是为了去掉全选中背景色 */
+
+gw-text::selection,
+gw-text::-moz-selection {
+    background: none;
+}
+
+
+/* 双击之后增加的class 加强拖动效果 */
+
+.gw-components.dblclick {
+    background-color: transparent;
+    box-shadow: 0.1em 0.1em #999;
+    border: 1px solid #ccc;
+    color: #999;
+}
+
+.gw-components.dblclick gw-text {
+    border-bottom: 1px dotted #999;
+}
+
+
+/* 子表编辑区域 */
+
+gw-sub-tab {
+    padding: 30px 10px 10px 10px;
+    margin: 5px;
+    background-color: #ffffff;
+    background-image: linear-gradient(#eee 1px, transparent 0), linear-gradient(90deg, #eee 1px, transparent 0);
+    background-size: 4px 4px, 4px 4px;
+    border: 1px dotted #ddd;
+    display: block;
+    position: relative;
+}
+
+gw-sub-tab gw-text {
+    font-size: 12px;
+    color: #999;
+    border: 0px;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
+
+
+/* 脚本 */
+
+script {
+    width: 20px;
+    height: 20px;
+    display: block;
+    padding: 0px;
+    margin: 5px;
+    line-height: 150px;
+    float: left;
+    overflow: hidden;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUBAMAAAB/pwA+AAAAA3NCSVQICAjb4U/gAAAAJFBMVEWZmZmnp6fl5eXMzMzFxcX///+3t7fT09OsrKy7u7vd3d3t7e396lTqAAAACXBIWXMAAAsSAAALEgHS3X78AAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M1cbXjNgAAAHFJREFUCJljCGOAgqkMCTAmJwM6kBSAM10b4ExVKM1swBAFxGDZDRwh3CEgFksQA0sEw1YHINNUgYEpgIEpGMgsXcDAqsDAFQ7SFcTQ6sCgCtZnquDaAJZnYGAvUAViqMlBcLs4QuBMxokY7kNyOsJDAKKUD5viuAVDAAAAAElFTkSuQmCC);
+    background-repeat: no-repeat;
+    /* background-color: #ddd; */
+    /* border: 1px solid #ccc;
+    border-radius: 4px; */
+}

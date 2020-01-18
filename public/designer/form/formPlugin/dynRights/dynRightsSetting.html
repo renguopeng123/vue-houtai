@@ -1,0 +1,81 @@
+<html ng-app="app">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../../../build/common/base.css" rel="stylesheet">
+<script type="text/javascript" src="../../../build/common/base.js"></script>
+<script type="text/javascript" src="../../../build/common/ngEdit.js"></script>
+<link href="../../../build/common/codeMirror.css" rel="stylesheet">
+<script type="text/javascript" src="../../../build/common/codeMirror.js"></script>
+
+<script type="text/javascript">
+	var app = angular.module('app', [ 'baseDirective', 'ui.codemirror' ]);
+	app.controller("ctrl", [ '$scope', 'baseService', 'ArrayToolService', function($scope, baseService, ArrayToolService) {
+		$scope.ArrayTool = ArrayToolService;
+		$scope.parentScope = window.passData.parentScope;
+		$scope.script = window.passData.script;
+
+		$scope.init = function() {
+		};
+
+		$scope.append = function(str) {
+			$scope.$broadcast("script", function(CodeMirror) {
+				CodeMirror.replaceSelection("" + str);
+			});
+			$scope.path = "";
+			$scope.cond = "";
+		};
+	} ]);
+
+	//父页面打开按【确定】按钮时的回调函数
+	function getData() {
+		var scope = AngularUtil.getScope();
+		return scope.script;
+	}
+</script>
+</head>
+<body ng-controller="ctrl" ng-init="init()">
+	<form name="form">
+		<table class="form-table">
+			<tr>
+				<th>说明</th>
+				<td style="color: green;" colspan="2">
+					配置的是可正常执行javaScript脚本，返回true时代表配置生效
+					<br />
+					用户可以直接在其中直接使用页面的data数据
+					<br />
+					例子：return data.kjcs.dxwb=="XXX";
+				</td>
+			</tr>
+			<tr>
+				<th>选择</th>
+				<td>
+					字段：
+					<select class="form-control" ng-model="path" ng-options="m.path as m.desc for m in parentScope.columnPList" ng-change="append(path)">
+						<option value="">请选择</option>
+					</select>
+				</td>
+				<td>
+					条件：
+					<select class="form-control" ng-model="cond" ng-change="append(cond)">
+						<option value="">请选择</option>
+						<option value="==">等于</option>
+						<option value="!=">不等于</option>
+						<option value=">">大于</option>
+						<option value="<">小于</option>
+						<option value=">=">大于等于</option>
+						<option value="<=">小于等于</option>
+						<option value="!=null">不为空</option>
+						<option value="==null">为空</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>脚本</th>
+				<td colspan="2">
+					<textarea ng-model="script" cols="100" height="100px" ui-codemirror="" broadcast="script"></textarea>
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<div ng-controller="FlowConfController">
+
+    <!-- 数据流程模型 -->
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-heading-title">
+                <div style="float:left; width: 90%;" onclick="panelCollapseOrExpand(this)">
+                    流程数据模型绑定<i class="panel-icon-custom panel-heading-collapse"></i>
+                </div>
+                <div>
+                    <i class="panel-icon-custom panel-heading-add" ng-click="addDataModel()"></i>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover data-model-table">
+                <tr>
+                    <th>数据模型</th>
+                    <th>KEY</th>
+                    <th>操作</th>
+                </tr>
+                <tr ng-repeat="dataModel in dataModelList">
+                    <td>{{dataModel.name}}</td>
+                    <td>{{dataModel.code}}</td>
+                    <td>
+                        <i class="panel-icon-custom editor-icon-delete" ng-click="delDataModel($index)"
+                           title="请注意！删除会影响流程配置中使用该数据模型的流程脚本、表单等"></i>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 全局表单设置 -->
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+            <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+                全局表单设置<i class="panel-icon-custom panel-heading-collapse"></i>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal" style="width: 95%">
+                <div type="global" title="全局表单" bpm-form="bpmDefSetting.flow.globalForm" mobile-form="bpmDefSetting.flow.globalMobileForm"></div>
+                <!--<div type="instance" title="实例表单" bpm-form="bpmDefSetting.flow.instForm" mobile-form="bpmDefSetting.flow.instMobileForm"></div>-->
+            </div>
+        </div>
+	</div>
+
+    <!-- 流程属性配置 -->
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+            <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+                流程属性配置<i class="panel-icon-custom panel-heading-collapse"></i>
+            </div>
+        </div>
+		<div class="panel-body">
+            <div ng-show="!properties" class="alert alert-danger row show-grid "></div>
+            <div class="form-horizontal" style="width: 95%">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label middle title">属性设置:</label>
+                    <div class="col-sm-8">
+                        <label class="checkbox-label" ng-class="{'checked' : properties.allowExecutorEmpty}" ab-tip title="任务执行人是否可以为空">
+                            <i class="panel-icon-custom editor-icon-checkbox"></i>
+                            <input type="checkbox" ng-model="properties.allowExecutorEmpty"> 允许执行人为空
+                        </label>
+                        <label class="checkbox-label" ng-class="{'checked' : properties.supportMobile === '1'}" ab-tip title="支持移动端，该流程定义任务会出现在移动端">
+                            <i class="panel-icon-custom editor-icon-checkbox"></i>
+                            <input type="checkbox" ab-boolean-checkbox="1/0" ng-model="properties.supportMobile" text="支持移动端"> 支持移动端
+                        </label>
+                        <label class="checkbox-label" ng-class="{'checked' : properties.logSubmitData}"  ab-tip title="若开启日志，会记录流程每次提交的数据">
+                            <i class="panel-icon-custom editor-icon-checkbox"></i>
+                            <input type="checkbox" ng-model="properties.logSubmitData" text="记录每次提交数据"> 记录每次提交数据
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label middle title">状态:</label>
+                    <div class="col-sm-8">
+                        <div class="btn-group custom-btn-radio-group">
+                            <label class="btn btn-default" ng-class="properties.status=='draft'?'active':''">
+                                <input type="radio" ng-model="properties.status" value="draft">草稿
+                            </label>
+                            <label class="btn btn-default" ng-class="properties.status=='deploy'?'active':''">
+                                <input type="radio" ng-model="properties.status" value="deploy">发布
+                            </label>
+                            <label class="btn btn-default" ng-class="properties.status=='forbidden'?'active':''">
+                                <input type="radio" ng-model="properties.status" value="forbidden" ab-tip title="流程实例将会被禁用">禁用
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label title" title="流程任务，流程实例的标题生成配置，可以使用业务对象主表字段">标题规则:</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" ng-options="m as m.name for m in subjectVariables" ng-model="subjectVar" ng-change="setSubject(m)">
+                            <option value="">选择标题可用变量</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <textarea rows="6" cols="39" class="form-control property-textarea" ng-model="properties.subjectRule"></textarea>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+
+</div>

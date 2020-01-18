@@ -1,0 +1,169 @@
+<html ng-app="app">
+<head>
+    <title>节点消息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="../../build/common/base.css" rel="stylesheet">
+    <link href="../../build/common/codeMirror.css" rel="stylesheet">
+    <link href="../../assets/custom/css/batchOperationDialog.css" rel="stylesheet">
+    <link href="../../assets/custom/css/definitionNodeMessageDialog.css" rel="stylesheet">
+
+    <script type="text/javascript" src="../../build/common/ngEdit-ori.js"></script>
+    <script type="text/javascript" src="../../build/common/codeMirror.js"></script>
+    <script type="text/javascript" src="../../build/common/uedtor.js"></script>
+    <script type="text/javascript" src="../../assets/js/platform/bpm/definition/taskReminderController.js"></script>
+
+</head>
+<body ng-controller="ctrl">
+
+<!-- 左侧 tab -->
+<div class="vertical-tab pull-left">
+    <div class="dashed-line pull-left"></div>
+    <div class="vertical-tab-container pull-left">
+        <ul class="nav nav-stacked">
+            <li ng-repeat="reminder in reminderList track by $index" ng-class="{'current': $index === selectedIndex}">
+                <div class="vertical-tab-content">
+                    <div class="tab-order pull-left">{{$index + 1}}</div>
+                    <div class="tab-title pull-left" ng-click="toggleNode($index)">
+                        <div class="tab-title-order pull-left">{{$index + 1}}</div>
+                        <div class="tab-title-content pull-left">
+                            {{reminder.desc}}
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="tab-add">
+                <div class="vertical-tab-content">
+                    <div class="tab-order pull-left">+</div>
+                    <div class="tab-add-btn pull-right" ng-click="addNode()">
+                        新增一条
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- 右侧内容 -->
+<div class="user-content pull-right">
+    <div class="btns">
+        <span class="btn btn-info" ng-disabled="selectedIndex === -1" ng-click="moveUp()">上移</span>
+        <span class="btn btn-info" ng-disabled="selectedIndex === -1" ng-click="moveDown()">下移</span>
+        <span class="btn btn-danger" ng-disabled="selectedIndex === -1" ng-click="moveDel()">删除</span>
+        <span class="btn btn-info pull-right" ng-disabled="selectedIndex === -1" ng-click="saveModel()">保存</span>
+    </div>
+
+    <div class="user-select">
+        <form name="form">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title"><span class="required">*</span>催办标题:</label>
+                    <div class="col-sm-9">
+                        <input type="text" ng-model="reminder.desc" class="form-control" ab-validate="{required:true,maxlength:220}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title">
+                        <span class="fa fa-question-circle text-info" ab-tip title="若不选择默认该流程所有节点任务均执行该催办"></span>
+                        催办任务节点:
+                    </label>
+                    <div class="col-sm-9">
+                        <select ng-model="reminder.nodeId" ng-disable="disable" class="form-control" ng-options="node.nodeId as node.nodeName for node in nodeList">
+                            <option value="">所有节点</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title">
+                        <span class="fa fa-question-circle text-info" ab-tip title="特殊条件配置groovy脚本，可以使用插件变量。 return false 则不执行催办"></span>
+                        条件脚本:
+                    </label>
+                    <div class="col-sm-9">
+                        <div select-script def-id="{{defId}}" broadcast-string="conditionScript" text=""></div>
+                        <textarea ng-model="reminder.conditionScript" ui-codemirror="" height="60px" width="95%" broadcast="conditionScript"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title">任务限时:</label>
+                    <div class="col-sm-9">
+                        <span ab-times ng-model="reminder.timeLimit"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title">
+                        <span class="fa fa-question-circle text-info" ab-tip title="催办几次后不再进行催办"></span>
+                        催办次数:
+                    </label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" ab-validate="{'number':true}" ng-model="reminder.maxReminderTimes">
+                    </div>
+                </div>
+                <div class="form-group" ng-show="reminder.maxReminderTimes>1">
+                    <label class="col-sm-3 control-label middle title">
+                        <span class="fa fa-question-circle text-info" ab-tip title="间隔多久进行下一次催办"></span>
+                        催办周期:
+                    </label>
+                    <div class="col-sm-9">
+                        <span ab-times ng-model="reminder.reminderCycle"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title">催办属性:</label>
+                    <div class="col-sm-9">
+                        <label class="radio-label" ng-class="{'checked': reminder.isCalcWorkDay}" style="margin-right: 25px"
+                               ab-tip title="工作日，催办计算周期会以工作日模式计算（自动跳过周末、节假日）">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" ng-value=true ng-model="reminder.isCalcWorkDay">
+                            工作日模式
+                        </label>
+                        <label class="radio-label" ng-class="{'checked': !reminder.isCalcWorkDay}" ab-tip title="工作日，催办计算周期会以工作日模式计算（自动跳过周末、节假日）">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" ng-value=false ng-model="reminder.isCalcWorkDay">
+                            日历日模式
+                        </label><br/>
+                        <label class="radio-label" ng-class="{'checked': reminder.isUrgent}" ab-tip title="若加急，催办时候会默认将任务紧急程度增加1，默认是50，任务列表会通过紧急程度排序">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" ng-value=true ng-model="reminder.isUrgent">
+                            催办时加急任务
+                        </label>
+                        <label class="radio-label" ng-class="{'checked': !reminder.isUrgent}" ab-tip title="若加急，催办时候会默认将任务紧急程度增加1，默认是50，任务列表会通过紧急程度排序">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" ng-value=false ng-model="reminder.isUrgent">
+                            不加急任务
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title">催办前置脚本:</label>
+                    <div class="col-sm-9">
+                        <div select-script def-id="{{defId}}" broadcast-string="beforeScript"
+                             text="催办执行前置脚本，return false 则取消本次催办（下一周期还会继续催办）<br/> 也可以调用流程终止接口，任务完成接口，可以使用到催办次数变量 reminderTimes"></div>
+                        <textarea ng-model="reminder.beforeScript" ui-codemirror="" height="60px" width="95%" broadcast="beforeScript"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title"><span class="required">*</span>催办消息类型:</label>
+                    <div class="col-sm-9" ng-model="msgList" ab-load="sys/tools/getInterFaceImpls?classPath=cn.gwssi.ecloudbpm.sys.simplemq.handler.msg.AbsNotifyMessageHandler" simple-data="true">
+                        <label class="checkbox-label" ng-class="{'checked' : reminder.msgType && reminder.msgType.indexOf(msg.type) !== -1}" ng-repeat="msg in msgList">
+                            <i class="panel-icon-custom editor-icon-checkbox"></i>
+                            <input type="checkbox" ab-checkbox ng-model="reminder.msgType" value="{{msg.type}}" ab-validate="{required:true}"/>{{msg.title}}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title"><span class="required">*</span>富文本模板:</label>
+                    <div class="col-sm-9" ng-model="msgList" ab-load="sys/tools/getInterFaceImpls?classPath=cn.gwssi.ecloudbpm.sys.simplemq.handler.msg.AbsNotifyMessageHandler" simple-data="true">
+                        <textarea type="text" ab-editor ng-model="reminder.htmlTemplate" style="width: 95%;height: 300px"/></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title"><span class="required">*</span>普通文本模板:</label>
+                    <div class="col-sm-9" ng-model="msgList" ab-load="sys/tools/getInterFaceImpls?classPath=cn.gwssi.ecloudbpm.sys.simplemq.handler.msg.AbsNotifyMessageHandler" simple-data="true">
+                        <textarea rows="3" class="form-control" ng-model="reminder.textTemplate" style="width: 95%;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

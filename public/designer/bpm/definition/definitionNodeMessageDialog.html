@@ -1,0 +1,88 @@
+<html ng-app="app">
+<head>
+    <title>节点消息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="../../build/common/base.css" rel="stylesheet">
+    <link href="../../build/common/codeMirror.css" rel="stylesheet">
+    <link href="../../assets/custom/css/definitionNodeMessageDialog.css" rel="stylesheet">
+
+    <script type="text/javascript" src="../../build/common/base.js"></script>
+    <script type="text/javascript" src="../../build/common/ngEdit-ori.js"></script>
+    <script type="text/javascript" src="../../build/common/codeMirror.js"></script>
+    <script type="text/javascript" src="../../build/common/uedtor.js"></script>
+    <script type="text/javascript" src="../../assets/js/platform/bpm/definition/definitionNodeMessageController.js"></script>
+</head>
+<body ng-controller="ctrl">
+<form name="form">
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="col-xs-2 control-label middle title"><span class="required">*</span>消息描述:</label>
+            <div class="col-xs-10">
+                <input type="text" ng-model="nodeMessage.desc" class="form-control" ab-validate="{required:true,maxlength:220}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label middle title">执行节点:</label>
+            <div class="col-xs-10">
+                <select ng-model="nodeMessage.nodeId" ng-disable="disable" class="form-control" ng-options="node.nodeId as node.nodeName for node in nodeList">
+                    <option value="">所有节点</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label middle title"><span class="required">*</span>执行时机:</label>
+            <div class="col-xs-10">
+                <select ng-model="nodeMessage.event" ng-disable="disable" class="form-control"
+                        ng-options="event.key as event.desc for event in eventList" ab-validate="{required:true}">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label middle title">条件脚本:</label>
+            <div class="col-xs-10">
+                <div select-script def-id="{{defId}}" broadcast-string="condition" text="特殊条件配置groovy脚本，可以使用流程变量表单变量。return false 则取消发送"></div>
+                <textarea ng-model="nodeMessage.condition" ui-codemirror="" width="90%" height="60px" broadcast="condition"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label middle title">通知人:</label>
+            <div class="col-xs-10">
+                <div class="selected-label" ng-if="nodeMessage.userRules.length === 0">
+                    <label class="label label-default">节点任务候选人</label>
+                </div>
+                <div class="selected-label" ng-if="nodeMessage.userRules.length > 0">
+                    <label class="label label-default" ng-repeat="userRule in nodeMessage.userRules">
+                        {{userRule.description}}<i class="fa fa-times-circle" ng-click="ArrayTool.del($index,nodeMessage.userRules)"></i>
+                    </label>
+                </div>
+                <div class="selected-btn">
+                    <a class="btn btn-primary" href="javaScript:void(0)" ng-click="addNodeUserCondition()"><i class="fa fa-plus fa-2x"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" ng-model="msgList" ab-load="sys/tools/getInterFaceImpls?classPath=cn.gwssi.ecloudbpm.sys.simplemq.handler.msg.AbsNotifyMessageHandler" simple-data="true">
+            <label class="col-xs-2 control-label middle title"><span class="required">*</span>消息类型:</label>
+            <div class="col-xs-10">
+                <label class="checkbox-label" ng-class="{'checked' : nodeMessage.msgType && nodeMessage.msgType.indexOf(msg.type) !== -1}" ng-repeat="msg in msgList">
+                    <i class="panel-icon-custom editor-icon-checkbox"></i>
+                    <input type="checkbox" ab-checkbox ng-model="nodeMessage.msgType" value="{{msg.type}}" ab-validate="{required:true}"/>{{msg.title}}
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label middle title"><span class="required">*</span>富文本模板:</label>
+            <div class="col-xs-10">
+                <textarea type="text" ab-editor ng-model="nodeMessage.htmlTemplate" style="width: 90%;height: 300px"/></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label middle title"><span class="required">*</span>普通文本模板:</label>
+            <div class="col-xs-10">
+                <textarea rows="3" class="form-control" ng-model="nodeMessage.textTemplate" style="width: 90%;"></textarea>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>

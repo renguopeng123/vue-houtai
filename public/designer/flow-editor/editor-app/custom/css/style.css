@@ -1,0 +1,719 @@
+/***************************** 整体布局 *****************************/
+body {
+    overflow: hidden;
+}
+
+.toolbar {
+    height: 50px;
+}
+
+.flow-node {
+    float: left;
+    width: 180px;
+}
+
+.flow-node-hide {
+    float: left;
+    width: 30px;
+    display: none;
+}
+
+.flow-center {
+    position: absolute;
+    top: 50px;
+}
+
+.flow-center-left1 {
+    left: 180px;
+}
+
+.flow-center-left2 {
+    left: 30px;
+}
+
+.flow-designer {
+    float: left;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.flow-designer-width1 {
+    width: calc(100vw - 560px);
+}
+
+.flow-designer-width2 {
+    width: calc(100vw - 410px);
+}
+
+.properties {
+    float: right;
+    width: 380px;
+}
+
+.flow-node,
+.flow-node-hide,
+.flow-designer,
+.properties {
+    height: calc(100vh - 50px);
+    overflow: auto;
+    background: #fbfcfe;
+}
+
+.stencil-item {
+    font-size: 14px;
+}
+
+/***************************** 顶部图标 *****************************/
+
+@font-face {
+    font-family: 'ActivitiModeler';
+    src: url('../../fonts/activiti-admin-webfont-custom.eot');
+    src: url('../../fonts/activiti-admin-webfont-custom.eot?#iefix') format('embedded-opentype'),
+    url('../../fonts/activiti-admin-webfont-custom.woff') format('woff'),
+    url('../../fonts/activiti-admin-webfont-custom.ttf') format('truetype'),
+    url('../../fonts/activiti-admin-webfont-custom.svg#ActivitiModeler') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.subheader {
+    background-color: #fff;
+}
+
+.editor-toolbar .btn.btn-inverse {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 0 6px;
+}
+
+.editor-toolbar .btn.btn-inverse.pressed,
+.editor-toolbar .btn.btn-inverse:focus {
+    background-color: #409EFF;
+}
+
+.editor-toolbar .btn.btn-inverse.disabled,
+.editor-toolbar .btn.btn-inverse[disabled],
+.editor-toolbar .btn.btn-inverse[disabled]:active,
+.editor-toolbar .btn.btn-inverse[disabled]:hover {
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.editor-toolbar .btn.btn-inverse.separator {
+    border: none;
+    background: transparent;
+}
+
+.editor-icon {
+    color: #0081FF;
+    top: 0;
+}
+
+.editor-toolbar .btn.btn-inverse.pressed .editor-icon,
+.editor-toolbar .btn.btn-inverse:focus .editor-icon {
+    color: #fff;
+}
+
+.editor-toolbar .btn.btn-inverse.disabled .editor-icon,
+.editor-toolbar .btn.btn-inverse[disabled] .editor-icon,
+.editor-toolbar .btn.btn-inverse[disabled]:active .editor-icon,
+.editor-toolbar .btn.btn-inverse[disabled]:hover .editor-icon {
+    color: #ccc;
+}
+
+.editor-icon-undo:before {
+    content: "\e602";
+}
+
+.editor-icon-zoom-fit:before {
+    content: "\e603";
+}
+
+.editor-icon-redo:before {
+    content: "\e61f";
+}
+
+.editor-icon-zoom-out:before {
+    content: "\e620";
+}
+
+.editor-icon-zoom-actual:before {
+    content: "\e630";
+}
+
+.editor-icon-arrow-down:before {
+    content: "\e604";
+}
+
+.editor-icon-zoom-in:before {
+    content: "\e606";
+}
+
+.editor-icon-delete:before {
+    content: "\e607";
+}
+
+.editor-icon-paste:before {
+    content: "\e608";
+}
+
+.editor-icon-bendpoint-add:before {
+    content: "\e61b";
+}
+
+.editor-icon-bendpoint-remove:before {
+    content: "\e60a";
+}
+
+.editor-icon-copy:before {
+    content: "\e60b";
+}
+
+.editor-icon-save:before {
+    content: "\e60c";
+}
+
+.editor-icon-same-size:before {
+    content: "\e60d";
+}
+
+.editor-icon-arrow-left:before {
+    content: "\e60e";
+}
+
+.editor-icon-arrow-right:before {
+    content: "\e60f";
+}
+
+.editor-icon-arrow-up:before {
+    content: "\e610";
+}
+
+.editor-icon-align-horizontal:before {
+    content: "\e611";
+}
+
+.editor-icon-chevron-left:before {
+    content: "\e612";
+}
+
+.editor-icon-chevron-down:before {
+    content: "\e613";
+}
+
+.editor-icon-chevron-up:before {
+    content: "\e614";
+}
+
+.editor-icon-chevron-right:before {
+    content: "\e615";
+}
+
+.editor-icon-cut:before {
+    content: "\e616";
+}
+
+.editor-icon-align-vertical:before {
+    content: "\e618";
+}
+
+/***************************** panel面板 *****************************/
+
+.panel-primary {
+    box-shadow: none;
+}
+
+.panel-body {
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+
+.panel-body,
+#paletteSection .stencil-group > li {
+    background: #fbfcfe;
+}
+
+.stencils {
+    border-right: none;
+}
+
+.properties-tab,
+.flow-node-tab {
+    border-bottom: 1px solid #ddd;
+}
+
+.properties-tab .nav-pills {
+    display: table;
+    margin: 0 auto;
+}
+
+.properties-tab .nav-pills li {
+    margin: 0 30px;
+}
+
+.properties-tab .nav-pills > li > a,
+.flow-node-tab .nav-pills > li > a {
+    font-size: 14px;
+    background: transparent;
+    color: #000;
+}
+
+.properties-tab .nav-pills > li.active > a,
+.properties-tab .nav-pills > li.active > a:hover,
+.properties-tab .nav-pills > li.active > a:focus,
+.flow-node-tab .nav-pills > li.active > a,
+.flow-node-tab .nav-pills > li.active > a:hover,
+.flow-node-tab .nav-pills > li.active > a:focus {
+    background: transparent;
+    color: #000;
+    border-radius: 0;
+    border-bottom: 2px solid #0081FF;
+}
+
+.flow-node-tab .nav-pills {
+    display: block;
+}
+
+.flow-node-tab .nav-pills li.active {
+    margin: 0 15px;
+}
+
+.flow-node-tab .nav-pills li.icon,
+.flow-node-hide li.icon {
+    float: right;
+    margin: 10px 0;
+    font-size: 20px;
+}
+
+.panel-tool {
+    margin-top: -10px;
+    height: 20px;
+}
+
+.panel-tool a {
+    font-family: 'ActivitiModeler';
+    font-size: 16px;
+    width: 20px;
+    height: 20px;
+    color: #999;
+    background: none;
+}
+
+.panel-primary > .panel-heading {
+    background-color: #fbfcfe;
+    border: none;
+    padding: 4px 8px;
+    font-size: 14px;
+}
+
+.panel-heading-title {
+    color: #999;
+}
+
+.panel-icon-custom {
+    font-family: 'ActivitiModeler';
+    font-style: normal;
+    /*font-size: 16px;*/
+    width: 20px;
+    height: 20px;
+    color: #999;
+    background: none;
+    padding: 0 5px;
+}
+
+.layout-button-left:before {
+    content: "\e619";
+}
+
+.layout-button-right:before {
+    content: "\e617";
+}
+
+.panel-heading-collapse:before {
+    content: "\e614";
+}
+
+.panel-heading-expand:before {
+    content: "\e613";
+}
+
+.panel-heading-add:before {
+    content: "\e61a";
+}
+
+.panel-heading-edit:before {
+    content: "\e61c";
+}
+
+.panel-computer:before {
+    content: "\e61e";
+    font-size: 20px;
+}
+
+.panel-phone:before {
+    content: "\e61d";
+    font-size: 20px;
+}
+
+.panel-reset:before {
+    content: "\e602";
+    font-size: 16px;
+    position: absolute;
+    top: 0;
+    right: 20px;
+}
+
+.editor-icon-star:before {
+    content: "\e621";
+}
+
+.editor-icon-checkbox:before {
+     content: "\e600";
+ }
+
+.checked .editor-icon-checkbox:before {
+    content: "\e671";
+}
+
+/**********************************************panel面板---表单元素***************************************************/
+.panel-primary input,
+.panel-primary select {
+    border: none;
+    border-bottom: 1px solid #999;
+    background: none;
+    box-shadow: none;
+    font-size: 14px;
+}
+
+.panel-primary input[type=checkbox] {
+    -ms-transform: scale(1.3); /* IE */
+    -moz-transform: scale(1.3); /* FireFox */
+    -webkit-transform: scale(1.3); /* Safari and Chrome */
+    -o-transform: scale(1.3); /* Opera */
+}
+
+.panel-primary input[readonly],
+.panel-primary select[readnly] {
+    background: none;
+    cursor: text;
+}
+
+.panel-primary input:focus,
+.panel-primary select:focus,
+.panel-primary textarea:focus {
+    box-shadow: none;
+}
+
+.panel-primary textarea,
+.panel-primary textarea:focus {
+    border: 1px solid #ccc;
+    font-size: 12px;
+}
+
+.panel-primary .form-select {
+    width: 60%;
+    float: left;
+}
+
+.panel-primary .form-btn {
+    background-color: #EDF5FF;
+    border-color: #B2D8FF;
+    color: #0081FF;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 5px;
+    padding: 3px 10px;
+    margin: 0 10px;
+}
+
+.panel-primary .btn-default.active {
+    background-color: #409EFF;
+    color: #fff;
+}
+
+.panel-primary .property-textarea {
+    float: right;
+    width: 95%;
+}
+
+.panel-primary .form-group {
+    margin-bottom: 10px;
+}
+
+.panel-primary .timer .form-group {
+    margin: 0 0 10px 0;
+}
+
+.panel-primary .fix-height {
+    height: 30px;
+}
+
+.panel-primary .form-group .control-label {
+    font-size: 14px !important;
+    font-weight: normal;
+    padding-top: 3px;
+}
+
+.panel-primary .form-group .middle {
+    padding-top: 7px;
+}
+
+.panel-primary .form-group .control-label-icon {
+    margin-top: -3px
+}
+
+.panel-primary .alert {
+    background: #EDF5FF;
+    border: 0;
+    margin: 0;
+    color: #000;
+}
+
+/**********************************************属性配置----节点人员***************************************************/
+/**********************************************插件配置----节点表单初始化*********************************************/
+/**********************************************插件配置----节点通知消息*********************************************/
+/**********************************************插件配置----流程变量定义*********************************************/
+/**********************************************插件配置----流程催办设置*********************************************/
+.panel-body .node-users {
+    padding: 10px 10px 20px;
+    font-size: 14px;
+}
+
+.panel-body .users {
+    display: flex;
+    border: 1px solid #ddd;
+    border-top: 0;
+}
+
+.panel-body .users:first-child {
+    display: flex;
+    border-top: 1px solid #ddd;
+}
+
+.panel-body .users:hover,
+.panel-body .users:focus {
+    border-color: #409EFE;
+}
+
+.panel-body .users .users-order {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    width: 30px;
+    padding: 5px 10px;
+    background-color: #EDF6FF;
+    color: #999;
+}
+
+.panel-body .users:hover .users-order,
+.panel-body .users:focus .users-order {
+    color: #000;
+}
+
+.panel-body .users .users-content {
+    flex-grow: 1;
+    padding: 5px 10px;
+}
+
+.panel-body .users .users-content p {
+    margin: 0;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
+}
+
+.users-content-edit {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    width: 20px;
+    padding: 5px 10px;
+}
+
+.users-content-edit i {
+    color: #fbfcfe;
+    margin-left: -15px;
+}
+
+.panel-body .users:hover i,
+.panel-body .users:focus i {
+    color: #409EFE;
+}
+
+.users-content-weak {
+    color: #999;
+}
+
+/**********************************************属性配置----节点按钮***************************************************/
+.panel-body .btns {
+    padding: 10px 10px 20px;
+}
+
+.panel-body .btns .btn {
+    background-color: #F1F9EC;
+    color: #67C13B;
+    border-color: #C2E7B1;
+    padding: 3px 10px;
+    border-radius: 5px;
+}
+
+/**********************************************属性配置----流程属性模型绑定*******************************************/
+.panel-primary .data-model-table {
+    width: 95%;
+    margin: 0 auto 15px auto;
+    font-size: 14px;
+}
+
+.panel-primary .data-model-table th,
+.panel-primary .data-model-table td {
+    border: none;
+    border-bottom: 1px solid #999;
+    padding: 4px 8px;
+}
+
+.panel-primary .data-model-table th {
+    color: #999;
+}
+
+/**********************************************属性配置----流程属性配置*******************************************/
+.checkbox-label {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.checkbox-label.checked {
+    border-color: #409EFF;
+    color: #409EFF;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-label i {
+    padding: 0;
+}
+
+.checkbox-label.checked i {
+    color: #409EFF;
+}
+
+/**********************************************属性配置----节点属性*************************************************/
+.radio-label {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.radio-label.checked {
+    border-color: #409EFF;
+    color: #409EFF;
+}
+
+.radio-label input[type="radio"],
+.custom-btn-radio-group input[type="radio"] {
+    display: none;
+}
+
+.radio-label i {
+    padding: 0;
+}
+
+.radio-label.checked i {
+    color: #409EFF;
+}
+
+.property-switch {
+    padding-top: 7px;
+    font-size: 14px;
+}
+
+.property-switch p {
+    margin: 0;
+    float: left;
+}
+
+.property-switch p:first-child {
+    color: #999;
+    margin-right: 10px;
+}
+
+.property-switch p:last-child {
+    color: #13CE67;
+    margin-left: 10px;
+}
+
+.property-switch div {
+    float: left;
+}
+
+.form-horizontal [class^=checkbox] input + span:after {
+    top: 0;
+}
+
+/**********************************************插件配置*********************************************/
+.panel-body.plugin-padding {
+    padding: 10px 10px 20px;
+    font-size: 14px;
+}
+
+.plugin-property-textarea {
+    width: 95%;
+}
+
+.sign_percent {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+}
+
+.child-activiti {
+    margin-bottom: 20px;
+}
+
+.child-activiti a {
+    display: inline-block;
+}
+
+.child-activiti h4 {
+    display: inline-block;
+    margin: 0;
+}
+
+/***************************** 画布 *****************************/
+
+.ORYX_Editor {
+    background-image: linear-gradient(90deg, rgba(158, 158, 158, 0.15) 10%, rgba(0, 0, 0, 0) 10%), linear-gradient(rgba(158, 158, 158, 0.15) 10%, rgba(0, 0, 0, 0) 10%);
+    background-size: 5px 5px;
+}
+
+/***************************** 模态框 *****************************/
+
+.layui-layer-title {
+    background-color: #FFF;
+    border-bottom: 1px solid #CCC;
+}
+
+.layui-layer-content {
+    overflow: hidden!important;
+}
+
+.layui-layer-btn {
+    border-top: 1px solid #CCC;
+}
+
+.btn-danger,
+.layui-layer-btn .layui-layer-btn2{
+    float: right;
+    color: #F46C6C;
+    border-color: #FCC4C5;
+    background-color: #FEF0F0;
+}
+
+.btn-danger:hover,
+.layui-layer-btn .layui-layer-btn2:hover {
+    background-color: #ec4758;
+    border-color: #ec4758;
+    color: #fff;
+}

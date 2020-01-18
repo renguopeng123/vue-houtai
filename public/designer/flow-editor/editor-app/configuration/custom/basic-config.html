@@ -1,0 +1,38 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+            基础属性<i class="panel-icon-custom panel-heading-collapse"></i>
+        </div>
+    </div>
+
+    <div class="panel-body" style="padding-top: 5px;">
+        <div class="form-horizontal" style="width: 95%">
+            <div ng-if="selectedItem.nodeType!='Global'">
+                <div class="form-group fix-height" ng-repeat="property in selectedItem.properties" ng-click="propertyClicked($index)"
+                     ng-show="'oryx-documentation,oryx-process_id,oryx-name,oryx-overrideid,oryx-namepackage,oryx-name'.indexOf(property.key)!=-1">
+                    <label class="col-sm-2 control-label title">{{ property.title }}:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-if="property.key!=='oryx-name'" ng-blur="updatePropertyInModel(property,null,selectedItem.nodeId)"
+                               ng-model="property.value" ng-disabled="!property.hasReadWriteMode">
+                        <input type="text" class="form-control" ng-if="property.key==='oryx-name'" ng-change="updatePropertyInModel(property,null,selectedItem.nodeId)"
+                               ng-model="property.value" ng-disabled="!property.hasReadWriteMode">
+                    </div>
+                </div>
+            </div>
+            <div ng-if="selectedItem.nodeType=='Global'">
+                <div class="form-group fix-height">
+                    <label class="col-sm-2 control-label title">名称:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-model="bpmDefSetting.bpmDefinition.name">
+                    </div>
+                </div>
+                <div class="form-group fix-height">
+                    <label class="col-sm-2 control-label title">描述:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-model="bpmDefSetting.bpmDefinition.desc">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

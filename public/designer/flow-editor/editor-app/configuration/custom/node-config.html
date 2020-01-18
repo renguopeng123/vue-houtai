@@ -1,0 +1,144 @@
+<div ng-controller="NodeConfController" ng-init="node">
+
+	<!-- 节点表单  -->
+	<div class="panel panel-primary" ng-if="'UserTask,singTask,StartNoneEvent,'.indexOf(currentSelectedNode.nodeType) !=-1">
+		<div class="panel-heading">
+            <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+                节点表单<i class="panel-icon-custom panel-heading-collapse"></i>
+            </div>
+		</div>
+		<div class="panel-body forms">
+            <div class="form-horizontal" style="width: 95%">
+                <div>
+                    <div type="node" title="{{currentSelectedNode.nodeName}}" bpm-form="currentSelectedNode.form" mobile-form="currentSelectedNode.mobileForm"></div>
+                </div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 节点人员  -->
+	<div class="panel panel-primary" ng-if="'UserTask,'.indexOf(currentSelectedNode.nodeType) !=-1">
+		<div class="panel-heading">
+            <div class="panel-heading-title">
+                <div style="float:left; width: 90%;" onclick="panelCollapseOrExpand(this)">
+                    节点人员<i class="panel-icon-custom panel-heading-collapse"></i>
+                </div>
+                <div>
+                    <i class="panel-icon-custom panel-heading-edit" ng-click="addNodeUserCondition()"></i>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+		</div>
+		<div class="panel-body nodeUser">
+            <div class="node-users">
+				<div class="alert alert-danger row show-grid" role="alert" ng-if="!currentSelectedNode.plugins.userAssign.ruleList||currentSelectedNode.plugins.userAssign.ruleList.length==0">尚未配置节点人员，请添加人员设置</div>
+				<div class="users" ng-repeat="nodeCondition in currentSelectedNode.plugins.userAssign.ruleList">
+                    <div class="users-order">{{$index + 1}}</div>
+                    <div class="users-content">{{nodeCondition.description}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 节点按钮  -->
+	<div class="panel panel-primary" ng-if="'UserTask,singTask,StartNoneEvent,EndNoneEvent'.indexOf(currentSelectedNode.nodeType) !=-1">
+		<div class="panel-heading">
+            <div class="panel-heading-title">
+                <div style="float:left; width: 90%;" onclick="panelCollapseOrExpand(this)">
+                    节点按钮<i class="panel-icon-custom panel-heading-collapse"></i>
+                </div>
+                <div>
+                    <i class="panel-icon-custom panel-heading-edit" ng-click="editBtns(currentSelectedNode)"></i>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+		</div>
+		<div class="panel-body">
+            <div class="btns">
+				<div class="alert alert-danger row show-grid" ng-if="!currentSelectedNode.btnList || currentSelectedNode.btnList.length ==0">按钮会在保存后生成</div>
+				<span ng-repeat="btn in currentSelectedNode.btnList" class="btn btn-xs btn-success" style="margin: 3px">{{btn.name}}</span>
+			</divclass>
+		</div>
+	</div>
+
+	<!-- 节点属性-->
+	<div class="panel panel-primary" ng-if="'UserTask,singTask,'.indexOf(currentSelectedNode.nodeType) !=-1">
+		<div class="panel-heading">
+            <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+                节点属性<i class="panel-icon-custom panel-heading-collapse"></i>
+            </div>
+		</div>
+		<div class="panel-body">
+            <div class="form-horizontal" style="overflow-x: hidden">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label middle title">驳回后执行人:</label>
+                    <div class="col-sm-8">
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNode.propertie.backUserMode==='history'}">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" value="history" ng-model="currentSelectedNode.propertie.backUserMode" ab-checked="backMode_all">
+                            历史执行人
+                        </label>
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNode.propertie.backUserMode==='normal'}">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" value="normal" ng-model="currentSelectedNode.propertie.backUserMode" ab-checked="backMode_all">
+                            节点配置人
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label middle title">驳回后流转方式:</label>
+                    <div class="col-sm-8">
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNode.propertie.backMode==='normal'}">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" value="normal" ng-model="currentSelectedNode.propertie.backMode">
+                            按流程图运行
+                        </label>
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNode.propertie.backMode==='back'}">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" value="back" ng-model="currentSelectedNode.propertie.backMode">
+                            返回驳回节点
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label middle title">指定驳回节点:</label>
+                    <div class="col-sm-8">
+                        <select ng-model="currentSelectedNode.propertie.backNode" class="form-control" style="width: 96%" placeholder="驳回节点" title="默认驳回至前一节点" ab-tip="{position: { my: 'top left', at: 'bottom center'}}">
+                            <option value="">前一节点</option>
+                            <option ng-repeat="(nodeId,n) in nodeMap" ng-show="'UserTask'.indexOf(n.nodeType) != -1" value="{{nodeId}}" ng-selected="nodeId === currentSelectedNode.propertie.backNode">{{n.nodeName}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label middle title">自由选择候选人:</label>
+                    <div class="col-sm-8">
+                        <div class="btn-group custom-btn-radio-group">
+                            <label class="btn btn-default" ng-class="currentSelectedNode.propertie.freeSelectUser=='no'?'active':''">
+                                <input type="radio" ng-model="currentSelectedNode.propertie.freeSelectUser" value="no">不开启
+                            </label>
+                            <label class="btn btn-default" ng-class="currentSelectedNode.propertie.freeSelectUser=='nodeUser'?'active':''">
+                                <input type="radio" ng-model="currentSelectedNode.propertie.freeSelectUser" value="nodeUser">节点人员
+                            </label>
+                            <label class="btn btn-default" ng-class="currentSelectedNode.propertie.freeSelectUser=='allUser'?'active':''">
+                                <input type="radio" ng-model="currentSelectedNode.propertie.freeSelectUser" value="allUser">所有用户
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label middle title" ab-tip title="可以自由选择分支的走向">自由分支选择:</label>
+                    <div class="col-sm-8 property-switch">
+                        <p>关闭</p>
+                        <div class="checkbox-slider--b">
+                            <label>
+                                <input type="checkbox" ng-model="currentSelectedNode.propertie.freeSelectNode">
+                                <span class="switch-span"></span>
+                            </label>
+                        </div>
+                        <p>开启</p>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>

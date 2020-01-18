@@ -1,0 +1,86 @@
+<div class="ivu-form ivu-form-label-right">
+    <!--脚本将会混入表单自定义表单控件-->
+    <script>
+        window.custFormComponentMixin = {
+            data: function() {
+                return {
+                    "test": "helloWorld"
+                };
+            },
+            created: function() {
+                console.log("混入对象的钩子被调用");
+            },
+            methods: {
+                testaaa: function() {
+                    alert(1)
+                }
+            }
+        }
+    </script>
+    <table class="form-table">
+        <tbody>
+            <tr class="firstRow">
+                <th>单行</th>
+                <td> <input type="text" class=" form-control" v-model="data.lkcsdbwscxg.dh" placeholder="占位符单行" v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.dh" desc="刘凯测试误删误修改-单行" v-ab-validate="{&quot;maxlength&quot;:50,&quot;required&quot;:true}">                    </td>
+                <th>多行</th>
+                <td> <textarea type="text" class=" form-control" v-model="data.lkcsdbwscxg.dx" placeholder="占位符多行" v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.dx" desc="刘凯测试误删误修改-多行" v-ab-validate="{&quot;maxlength&quot;:50,&quot;required&quot;:true}"></textarea>                    </td>
+                <th>下拉框</th>
+                <td> <select class=" form-control" v-model="data.lkcsdbwscxg.xlk" placeholder="下拉框占位符" v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.xlk" desc="刘凯测试误删误修改-下拉框" v-ab-validate="{&quot;maxlength&quot;:50}">
+                        <option value="">请选择</option>
+                        <option value="1">1</option>
+                    </select> </td>
+                <th>复选框</th>
+                <td>
+                    <ab-checkbox v-model="data.lkcsdbwscxg.fxk" v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.fxk" desc="刘凯测试误删误修改-复选框" v-ab-validate="{&quot;maxlength&quot;:50}">
+                        <div slot-scope="checkboxScope">
+                            <label class=" checkbox-inline"><input type="checkbox"
+                                    v-model="checkboxScope.tempData.currentValue" value="1"
+                                    name="lkcsdbwscxg-lkcswswxg-fxk"
+                                    v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.fxk">1</label>
+                        </div>
+                    </ab-checkbox>
+                </td>
+            </tr>
+            <tr>
+                <th>单选按钮</th>
+                <td>
+                    <div>
+                        <label class=" radio-inline"><input type="radio" v-model="data.lkcsdbwscxg.dxan"
+                                v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.dxan" desc="刘凯测试误删误修改-单选按钮"
+                                v-ab-validate="{&quot;maxlength&quot;:50}" value="1">1</label>
+                    </div>
+                </td>
+                <th>字典</th>
+                <td>
+                    <ab-dict type="text" class=" input-div" v-model="data.lkcsdbwscxg.zd" v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.zd" desc="刘凯测试误删误修改-字典" v-ab-validate="{&quot;maxlength&quot;:50}" dict-key=""></ab-dict>
+                </td>
+                <th>流水号文本</th>
+                <td>
+                    <ab-serial-no type="text" class=" form-control" v-model="data.lkcsdbwscxg.lsh" placeholder="占位流水号" v-bind:ab-permission="permission.lkcsdbwscxg.lkcswswxg.lsh" desc="刘凯测试误删误修改-流水号文本" v-ab-validate="{&quot;number&quot;:true,&quot;maxlength&quot;:50}" serial-no="dayNo">
+                    </ab-serial-no>
+                </td>
+                <th>附件</th>
+                <td>
+                    <ab-upload href="javascript:void(0)" class=" btn btn-primary fa-upload" v-model="data.lkcsdbwscxg.fj" :ab-permission="permission.lkcsdbwscxg.lkcswswxg.fj" desc="刘凯测试误删误修改-附件"></ab-upload>
+                </td>
+            </tr>
+            <tr>
+                <th>日期</th>
+                <td>
+                    <ab-date type="text" class=" form-control" v-model="data.lkcsdbwscxg.rq" v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.rq" desc="刘凯测试误删误修改-日期" v-ab-validate="{&quot;date&quot;:true}" format="yyyy-MM-dd HH:mm:ss"></ab-date>
+                </td>
+                <th>流水号数字</th>
+                <td>
+                    <ab-serial-no type="text" class=" form-control" v-model="data.lkcsdbwscxg.lshsz" v-bind:ab-permission="permission.lkcsdbwscxg.lkcswswxg.lshsz" desc="刘凯测试误删误修改-流水号数字" v-ab-validate="{&quot;number&quot;:true,&quot;maxlength&quot;:10}" serial-no="dayNo">
+                    </ab-serial-no>
+                </td>
+                <th>大文本</th>
+                <td> <textarea type="text" class=" form-control" v-model="data.lkcsdbwscxg.dwb" v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.dwb" desc="刘凯测试误删误修改-大文本" v-ab-validate="{}"></textarea> </td>
+                <th>校验测试</th>
+                <td> <input type="text" class=" form-control" v-model="data.lkcsdbwscxg.xycs" v-ab-permission="permission.lkcsdbwscxg.lkcswswxg.xycs" desc="刘凯测试误删误修改-校验测试" v-ab-validate="{&quot;maxlength&quot;:50,&quot;variable&quot;:true,&quot;nodigitsstart&quot;:true,&quot;required&quot;:true}">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

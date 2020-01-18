@@ -1,0 +1,18 @@
+
+<!--<span ng-if="!property.noValue">{{property.value|limitTo:20}}</span>-->
+<!--<span ng-if="!property.noValue && property.value != null && property.value.length > 20">...</span>-->
+<!--<span ng-if="property.noValue" translate>PROPERTY.EMPTY</span>-->
+
+<!--<span ng-if="!property.noValue">{{property.value|limitTo:20}}</span>-->
+<!--<span ng-if="!property.noValue && property.value != null && property.value.length > 20">...</span>-->
+<!--<span ng-if="property.noValue" translate>PROPERTY.EMPTY</span>-->
+
+<input ng-if="!property.noValue" readonly ng-value=property.value
+       type="text"
+       class="form-control"
+       auto-focus/>
+
+<input ng-if="property.noValue" readonly value="{{'PROPERTY.EMPTY' | translate}}"
+       type="text"
+       class="form-control"
+       auto-focus/>

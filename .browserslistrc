@@ -1,0 +1,8 @@
+# browserslist对于浏览器兼容性的配置，git地址 https://github.com/browserslist/browserslist
+#通过配置浏览器过滤的思路实现对应工具的版本
+#全球超过1%人使用的浏览器
+> 1%
+#每个浏览器的最后2个版本
+last 2 versions
+# 排除IE8及以下的版本
+not ie <= 8

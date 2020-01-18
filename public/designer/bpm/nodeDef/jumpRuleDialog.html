@@ -1,0 +1,79 @@
+<html ng-app="app">
+<head>
+<title>节点跳转规则</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../../build/common/base.css" rel="stylesheet">
+<link href="../../build/common/codeMirror.css" rel="stylesheet">
+
+<script type="text/javascript" src="../../build/common/ngEdit-ori.js"></script>
+<script type="text/javascript" src="../../build/common/codeMirror.js"></script>
+
+<script type="text/javascript">
+	var app = angular.module('app', [ 'baseDirective','ui.codemirror']);
+	app.controller("ctrl", [ '$scope', 'baseService', function(scope, baseService) {
+		scope.defId = $.getParam("defId");
+		scope.nodeId = $.getParam("nodeId");
+		scope.rule = passData.rule;
+		scope.nodeMap = passData.nodeMap;
+	} ]);
+	 
+	function getData(){
+		if (!AngularUtil.getScope().form.$valid){
+			$.Dialog.warning("表单校验未通过！");
+			return false;
+		}
+		
+		var rule = AngularUtil.getScope().rule;
+		rule.targetNodeDesc = $("option[value='"+rule.targetNode+"']").text();
+		return rule;
+	}
+</script>
+</head>
+<body ng-controller="ctrl">
+<form name="form">
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="col-xs-3 control-label middle title"><span class="required">*</span>跳转规则描述:</label>
+            <div class="col-xs-9">
+                <input type="text" ng-model="rule.name" class="form-control" ab-validate="{required:true,maxlength:120}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-3 control-label middle title">跳转至节点名称:</label>
+            <div class="col-xs-9">
+                <select ng-model="rule.targetNode" ab-validate="{required:true}" class="form-control" id="select">
+                    <option value="">请选择</option>
+                    <option ng-repeat="(nodeId,node) in nodeMap" value="{{nodeId}}" ng-show="node.nodeType==='UserTask'"
+                            ng-selected="nodeId===rule.targetNode">{{node.nodeName}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-3 control-label middle title">跳转规则脚本:</label>
+            <div class="col-xs-9">
+                <div select-script def-id="{{defId}}" node-id="{{nodeId}}" broadcast-string="script" text="脚本需要 return true or false"></div>
+                <textarea ng-model="rule.script" ui-codemirror="" height="210px" broadcast="script" ab-validate="{required:true}"></textarea>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+
+<style>
+    .form-horizontal {
+        padding-top: 20px;
+    }
+
+    .form-horizontal .control-label {
+        font-weight: normal;
+        text-align: right;
+        padding-top: 7px;
+    }
+
+    .required {
+        color: red;
+        margin-right: 5px;
+    }
+</style>
+
+</html>

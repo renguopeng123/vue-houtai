@@ -1,0 +1,47 @@
+div.ivu-form-item-error span.ivu-radio-inner{
+  border: 1px solid #ed4014 !important;
+}
+div.ivu-form-item-error span.ivu-checkbox-inner{
+  border: 1px solid #ed4014 !important;
+}
+.hide{
+  display: none;
+}
+/* table-form css*/
+.form-table .red{
+	color: red
+}
+.form-table {
+	width: 100%;
+ 	font-size: 12px;
+}
+.form-table thead {
+	height: 32px;
+}
+.form-table  tr {
+	height: 25px;
+}
+.form-table thead th {
+	background: #F0F2F9;
+	height: 32px;
+	text-align: center;
+	width: auto;
+}
+.form-table th {
+	width: 15%;
+	height: 32px;
+	padding: 0px 5px;
+	text-align: right;
+	color: #7A7A83;
+	font-weight: 200;
+	border:1px solid #e5e5e5;
+	background-color: #F7F7F7;
+	padding: 13px 3px !important;
+}
+.form-table td {
+	font-weight: normal;
+	padding: 5px 5px;
+	border:1px solid #e5e5e5;
+}
+
+   

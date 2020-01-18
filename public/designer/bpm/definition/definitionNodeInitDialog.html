@@ -1,0 +1,90 @@
+<html ng-app="app">
+<head>
+    <title>节点初始化</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="../../build/common/base.css" rel="stylesheet">
+    <link href="../../build/common/codeMirror.css" rel="stylesheet">
+    <link href="../../assets/custom/css/batchOperationDialog.css" rel="stylesheet">
+    <link href="../../assets/custom/css/definitionNodeInitDialog.css" rel="stylesheet">
+
+    <script type="text/javascript" src="../../build/common/base.js"></script>
+    <script type="text/javascript" src="../../build/common/ngEdit-ori.js"></script>
+    <script type="text/javascript" src="../../build/common/codeMirror.js"></script>
+    <script type="text/javascript" src="../../assets/js/platform/bpm/definition/definitionNodeInitController.js"></script>
+</head>
+<body ng-controller="ctrl">
+
+<!-- 左侧 tab -->
+<div class="vertical-tab pull-left">
+    <div class="dashed-line pull-left"></div>
+    <div class="vertical-tab-container pull-left">
+        <ul class="nav nav-stacked">
+            <li ng-repeat="node in nodeInitList track by $index" ng-class="{'current': $index === selectedIndex}">
+                <div class="vertical-tab-content">
+                    <div class="tab-order pull-left">{{$index + 1}}</div>
+                    <div class="tab-title pull-left" ng-click="toggleNode($index)">
+                        <div class="tab-title-order pull-left">{{$index + 1}}</div>
+                            <div class="tab-title-content pull-left">
+                            {{nodeMap[node.nodeId]}}
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="tab-add">
+                <div class="vertical-tab-content">
+                    <div class="tab-order pull-left">+</div>
+                    <div class="tab-add-btn pull-right" ng-click="addNode()">
+                        新增一条
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- 右侧内容 -->
+<div class="user-content pull-right">
+    <div class="btns">
+        <span class="btn btn-info" ng-disabled="selectedIndex === -1" ng-click="moveUp()">上移</span>
+        <span class="btn btn-info" ng-disabled="selectedIndex === -1" ng-click="moveDown()">下移</span>
+        <span class="btn btn-danger" ng-disabled="selectedIndex === -1" ng-click="moveDel()">删除</span>
+        <span class="btn btn-info pull-right" ng-disabled="selectedIndex === -1" ng-click="saveModel()">保存</span>
+    </div>
+
+    <form name="form">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label middle title"><span class="required">*</span>初始化节点:</label>
+                <div class="col-sm-9">
+                    <select ng-model="nodeInit.nodeId" ng-disable="disable" class="form-control"
+                            ab-validate="{required:true}"
+                            ng-options="node.nodeId as node.nodeName for node in nodeList">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label middle title"><span class="required">*</span>脚本描述: </label>
+                <div class="col-sm-9">
+                    <input type="text" ng-model="nodeInit.desc" class="form-control" ab-validate="{required:true,maxlength:120}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label middle title">展示前脚本:</label>
+                <div class="col-sm-9">
+                    <div select-script def-id="{{defId}}" broadcast-string="beforeShow" text="流程节点表单打开时每次执行,可用于数据初始化"></div>
+                    <textarea ng-model="nodeInit.beforeShow" ui-codemirror="" height="100px" broadcast="beforeShow"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label middle title">保存后脚本:</label>
+                <div class="col-sm-9">
+                    <div select-script def-id="{{defId}}" broadcast-string="whenSave" text="表单保存时执行，可用于流水号赋值，等数据加工"></div>
+                    <textarea ng-model="nodeInit.whenSave" ui-codemirror="" height="150px" broadcast="whenSave"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

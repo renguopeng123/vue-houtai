@@ -1,0 +1,10 @@
+
+<div ng-controller="KisBpmBooleanPropertyCtrl">
+    <!--<input type="checkbox" ng-model="property.value" ng-change="changeValue()"/>-->
+
+    <label class="checkbox-label" ng-class="{'checked' : property.value}" style="width: 80px;">
+        <i class="panel-icon-custom editor-icon-checkbox"></i>
+        <input type="checkbox" ng-model="property.value" ng-change="changeValue()">
+        <span style="float: right">{{property.value ? "是" : "否"}}</span>
+    </label>
+</div>

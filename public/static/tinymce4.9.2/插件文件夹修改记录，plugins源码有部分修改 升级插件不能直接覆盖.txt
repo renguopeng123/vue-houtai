@@ -1,0 +1,12 @@
+table插件
+屏蔽了所有Copy row的按钮 防止复制行的时候生成多个组件。
+
+code插件
+更改了标题 提示不能编辑gw标签。
+
+visualblocks插件
+修改了css 增加了table和自定义标签显示提示框图标的支持
+http://imgbase64.duoshitong.com/ 将图片转为base64，直接嵌入css做背景。
+
+help插件
+增加了一些说明事项。

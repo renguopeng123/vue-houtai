@@ -1,0 +1,4 @@
+全局安装increase-memory-limit
+npm install -g increase-memory-limit
+进入工程目录，执行：
+increase-memory-limit

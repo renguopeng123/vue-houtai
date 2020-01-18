@@ -1,0 +1,49 @@
+
+<html ng-app="app">
+<head>
+<title>流程定义</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../../build/common/base.css" rel="stylesheet">
+<script type="text/javascript" src="../../build/common/base.js"></script>
+<link href="../../build/common/codeMirror.css" rel="stylesheet">
+
+<script type="text/javascript" src="../../build/common/ngEdit-ori.js"></script>
+<script type="text/javascript" src="../../build/common/codeMirror.js"></script>
+<script type="text/javascript">
+	
+	var app = angular.module('app', [ 'baseDirective', 'ui.codemirror']);
+	app.controller("ctrl", [ '$scope', 'baseService', function(scope, baseService) {
+      scope.defId = $.getParam("defId");
+      scope.nodeId = $.getParam("defId");
+      scope.script = passData.script;
+      scope.notice = passData.notice;
+      scope.desc = passData.desc;
+      if(scope.desc=="脚本"){
+        scope.desc="";
+      }
+
+	} ]);
+	 
+	function getData(){
+		return AngularUtil.getScope().script;
+	}
+	function getDesc(){
+		return $("#desc").val() || "脚本";
+	}
+</script>
+</head>
+<body ng-controller="ctrl">
+<div class="panel panel-default">
+  <div class="panel-heading form-inline">
+	<input class="form-control pull-right" id="desc" ng-model="desc" style="width: 350px"  placeholder="请对脚本进行描述" ng-if="desc != undefind" >
+   <div select-script def-id="{{defId}}" node-id="{{nodeId}}" includeBpmConstants broadcast-string="script" text=""></div>
+  </div>
+  <div class="panel-body">
+   	<textarea ng-model="script" ui-codemirror height="calc(100vh - 140px)" broadcast="script" >${fn:escapeXml(script.script)}</textarea>
+  </div>
+  <div class="panel-footer">此脚本为Groove脚本!<br>
+ 	 {{notice}}
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+.user-content {
+    width: 585px;
+}
+
+.form-horizontal {
+    padding-top: 20px;
+}
+
+.form-horizontal .control-label {
+    font-weight: normal;
+}
+
+.required {
+    color: red;
+    margin-right: 5px;
+}

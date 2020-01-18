@@ -1,0 +1,57 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>处理任务</title>
+<link href="../../build/common/base.css" rel="stylesheet">
+<script type="text/javascript" src="../../build/common/base.js"></script>
+<script type="text/javascript" src="../../build/common/vueEdit.js"></script>
+<script type="text/javascript" src="../../assets/vue/service/bpm/bpmService-vue.js"></script>
+<style media="print">
+.print-hidden {
+	display: none
+}
+</style>
+</head>
+
+<body class="panel panel-default">
+	<div id="startController">
+		<div class="panel-heading print-hidden">
+			<bpm-buttons :buttons="buttons"></bpm-buttons>
+		</div>
+		<div v-if="form.type=='INNER'">
+			<ab-custom-form></ab-custom-form>
+		</div>
+		<div v-if="form.type=='FRAME'">
+			<ab-url-form :form="form"></ab-url-form>
+		</div>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript">
+	var app = new Vue({
+		el : '#startController',
+		data : function() {
+			return {
+				defName : "",
+				instance : "",
+				form : "",
+				buttons : "",
+				task : ""
+			}
+		},
+		created : function() {
+			var thisVue = this;
+			bpmService.init({
+				taskId : $.getParam("taskId")
+			}, function(data) {
+				Vue.formService.initCustFormFu(data.form.formHtml,data);
+				thisVue.form = data.form;
+				thisVue.defName = data.defName;
+				thisVue.buttons = data.buttonList;
+				thisVue.instance = data.instance;
+				thisVue.task = data.task;
+			});
+		}
+	})
+</script>

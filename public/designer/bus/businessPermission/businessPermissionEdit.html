@@ -1,0 +1,95 @@
+<html ng-app="app">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../../build/common/base.css" rel="stylesheet">
+<link href="../../assets/css/bootstrap-switch.min.css" rel="stylesheet">
+<link href="../../assets/custom/css/businessPermissionEditStyle.css" rel="stylesheet">
+<script type="text/javascript" src="../../assets/custom/js/dialog-conf.js"></script>
+<script type="text/javascript" src="../../build/common/base.js"></script>
+<script type="text/javascript" src="../../build/common/ngEdit.js"></script>
+<script type="text/javascript" src="../../assets/js/platform/bus/businessPermission/businessPermissionEditController.js"></script>
+</head>
+<body ng-controller="ctrl" ng-init="init()">
+
+    <div class="row instruction">
+        <p class="words">权限配置的用户默认为所有人，如需给用户指定授权，请点击编辑按钮。权限有限级别为：字段>表单>全局。</p>
+        <p>是否级联：是</p>
+        <div class="checkbox-slider--b" ng-model="isCascade" ng-click="toggleCascade($event)">
+            <label>
+                <input type="checkbox" ng-checked="!isCascade"><span></span>
+            </label>
+        </div>
+        <p>否</p>
+    </div>
+    <div class="row">
+        <div class="col-xs-4">业务对象</div>
+        <div class="col-xs-2">必填</div>
+        <div class="col-xs-2">编辑</div>
+        <div class="col-xs-2">只读</div>
+        <div class="col-xs-2">隐藏</div>
+    </div>
+
+	<form name="form" must-return="true" ab-load="/bus/businessPermission/getObject?objType={objType}&objVal={objVal}" ng-model="data">
+        <div class="content" ng-repeat="(boKey,bo) in boMap">
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <span class="label label-info">对象</span> {{bo.name}}({{bo.key}})
+                </div>
+                <div ng-repeat="item in rights_keys" class="col-xs-2">
+                    <a title="所有人" class="editor-icon editor-icon-radio" ng-class="{'checked': data.busObjMap[boKey].checked[item]}"
+                       ng-click="setEveryOne(data.busObjMap[boKey],item, true, true)"></a>
+                    <a class="editor-icon editor-icon-gray editor-icon-edit" ng-hide="isDisable(data.busObjMap[boKey].checked, item, true)"
+                       ng-click="openRightsDialog(data.busObjMap[boKey],item, true)"></a>
+                    <div class="desc">
+                        {{getRightsDesc(data.busObjMap[boKey].rights[item], true)}}
+                    </div>
+                </div>
+            </div>
+
+            <div ng-repeat="relation in bo.allRelations">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <span class="collapse-btn" ng-class="{'checked' : relation.table.hideFields}" ng-click="toggleShowFields(relation.table)">
+                            <i class="editor-icon editor-icon-chevron"></i>
+                        </span>
+                        <span class="label label-success">{{BusTableRelTypeKeyMap[relation.type].desc}}</span> {{relation.tableComment}}[{{relation.tableKey}}]
+                    </div>
+                    <div class="col-xs-2" ng-repeat="item in rights_keys">
+                        <a title="所有人" class="editor-icon editor-icon-radio" ng-class="{'checked': data.busObjMap[boKey].tableMap[relation.tableKey].checked[item]}"
+                           ng-click="setEveryOne(data.busObjMap[boKey].tableMap[relation.tableKey],item, true, true)"></a>
+                        <a class="editor-icon editor-icon-gray editor-icon-edit"  ng-hide="isDisable(data.busObjMap[boKey].tableMap[relation.tableKey].checked, item, true)"
+                           ng-click="openRightsDialog(data.busObjMap[boKey].tableMap[relation.tableKey],item, true)"></a>
+                        <div class="desc">
+                            {{getRightsDesc(data.busObjMap[boKey].tableMap[relation.tableKey].rights[item], true)}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-repeat="column in relation.table.columnsWithoutPk" ng-hide="relation.table.hideFields">
+                    <div class="col-xs-4 inner-column">
+                        <span class="label label-default">字段</span> {{column.comment}}[{{column.key}}]
+                    </div>
+                    <div class="col-xs-2" ng-repeat="item in rights_keys">
+                        <a title="所有人" class="editor-icon editor-icon-radio"
+                           ng-class="{'checked': data.busObjMap[boKey].tableMap[relation.tableKey].columnMap[column.key].checked[item]}"
+                           ng-click="setEveryOne(data.busObjMap[boKey].tableMap[relation.tableKey].columnMap[column.key],item, false, false)"></a>
+                        <a class="editor-icon editor-icon-gray editor-icon-edit"
+                           ng-hide="isDisable(data.busObjMap[boKey].tableMap[relation.tableKey].columnMap[column.key].checked, item, false)"
+                           ng-click="openRightsDialog(data.busObjMap[boKey].tableMap[relation.tableKey].columnMap[column.key],item, false)"></a>
+                        <div class="desc">
+                            {{getRightsDesc(data.busObjMap[boKey].tableMap[relation.tableKey].columnMap[column.key].rights[item], false)}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="row end-row">
+        <a class="btn btn-info" href="javaScript:void(0)" ng-model="finalData" ab-save="/bus/businessPermission/save">确定</a>
+        <a class="btn btn-default" href="javaScript:void(0)" ng-click="closeWindow()">取消</a>
+    </div>
+
+</body>
+</html>

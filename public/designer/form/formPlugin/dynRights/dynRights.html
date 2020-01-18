@@ -1,0 +1,242 @@
+<html ng-app="app">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../../../build/common/base.css" rel="stylesheet">
+<script type="text/javascript" src="../../../build/common/base.js"></script>
+<script type="text/javascript" src="../../../build/common/ngEdit.js"></script>
+
+<script type="text/javascript">
+	var app = angular.module('app', [ 'baseDirective' ]);
+	app.controller("ctrl", [ '$scope', 'baseService', 'ArrayToolService', function($scope, baseService, ArrayToolService) {
+		$scope.ArrayTool = ArrayToolService;
+		var parentScope = window.passData.parentScope;
+		var tableKey = window.passData.tableKey;
+		$scope.dynRights = window.passData.dynRights || [];
+		$scope.data = {
+			data : "data"
+		};
+		$scope.dataSize = 0;
+
+		$scope.init = function() {
+			$scope.selectedColumns = null;
+
+			//获取权限枚举
+			ToolsController.getEnum("cn.gwssi.ecloudbpm.bus.api.constant.RightsType").then(function(data) {
+				$scope.RightsType = data;
+				$scope.RightsTypeMap = {};
+				angular.forEach(data, function(val, key) {
+					$scope.RightsTypeMap[val.key] = val.desc;
+				});
+			});
+
+			//获取bo信息
+			var url = __ctx + "/bus/businessObject/getObject";
+			var defer = baseService.postForm(url, {
+				key : parentScope.data.boKey,
+				fill : true
+			});
+			$.getResultData(defer, function(data) {
+				$scope.bo = data;
+				$scope.columnCList = [];//子表字段数组
+				$scope.columnPList = [];//父表字段数组
+				$scope.columnMap = {};//字段map<权限路径,Column>
+				$scope.handlePath(data.relation);
+				$scope.rel = data.relation;
+				if (tableKey) {
+					$scope.findRel(data.relation);
+				}
+
+				$scope.findCColumn($scope.rel);
+				$scope.findPColumn($scope.rel);
+			}, null, true);
+		};
+
+		//计算出bo的path
+		$scope.handlePath = function(relation) {
+			if (relation.type == "main") {
+				relation.path = "data." + $scope.bo.key;
+			}
+			if (relation.type == "oneToMany") {
+				relation.path = relation.tableKey;
+			}
+			if (relation.type == "oneToOne") {
+				relation.path = relation.parent.path + "." + relation.tableKey;
+			}
+			angular.forEach(relation.children, function(child) {
+				$scope.handlePath(child);
+			});
+		}
+
+		//找到tableKey对应的关系
+		$scope.findRel = function(relation) {
+			if (relation.tableKey == tableKey) {
+				$scope.rel = relation;
+				return;
+			}
+			//递归子关系
+			angular.forEach(relation.children, function(child) {
+				$scope.findRel(child);
+			});
+		};
+
+		//计算子字段
+		$scope.findCColumn = function(relation) {
+			angular.forEach(relation.table.columnsWithOutHidden, function(column) {
+				var path = relation.path + "." + column.key;
+				var permission = "permission." + $scope.bo.key + "." + relation.tableKey + "." + column.key;
+				var column = {
+					desc : column.comment + "(" + column.table.comment + ")",
+					path : path,
+					permission : permission
+				};
+				$scope.columnCList.push(column);
+				$scope.columnMap[column.permission] = column;
+			});
+			//递归子关系
+			angular.forEach(relation.children, function(child) {
+				$scope.findCColumn(child);
+			});
+		};
+
+		//计算父字段
+		$scope.findPColumn = function(relation) {
+			if (relation.type == "oneToMany") {
+				if ($scope.dataSize > 0) {
+					$scope.data[relation.tableKey] = "subTempData." + relation.tableKey;
+				} else {
+					$scope.data[relation.tableKey] = relation.tableKey;
+				}
+				$scope.dataSize++;
+			}
+			angular.forEach(relation.table.columnsWithOutHidden, function(column) {
+				var path = relation.path + "." + column.key;
+				var permission = "permission." + $scope.bo.key + "." + relation.tableKey + "." + column.key;
+				var column = {
+					desc : column.comment + "(" + column.table.comment + ")",
+					path : path,
+					permission : permission
+				};
+				$scope.columnPList.push(column);
+				$scope.columnMap[column.permission] = column;
+			});
+			if (relation.parent) {
+				$scope.findPColumn(relation.parent);
+			}
+		};
+
+		$scope.add = function() {
+			if (!$scope.form.$valid) {
+				return;
+			}
+			var json = {};
+			json.permissions = "";
+			angular.forEach($scope.selectedColumns, function(val, key) {
+				if (json.permissions) {
+					json.permissions += ",";
+				}
+				json.permissions += val.permission;
+			});
+			json.rights = $scope.selectedRights;
+			json.script = "return ";
+			$scope.dynRights.push(json);
+			$scope.selectedColumns = null;
+			$scope.selectedRights = null;
+		};
+
+		$scope.setting = function(item) {
+			var conf = {
+				height : 350,
+				width : 830,
+				url : "/form/formPlugin/dynRights/dynRightsSetting.html",
+				title : "条件配置",
+				topOpen : true,
+				btn : true,
+				closeBtn : 1,
+			};
+			conf.passData = {
+				parentScope : $scope,
+				script : item.script
+			};
+			conf.ok = function(index, innerWindow) {
+				var data = innerWindow.getData();
+				$scope.$apply(function() {
+					item.script = data;
+				});
+				$.Dialog.close(innerWindow);
+			};
+			jQuery.Dialog.open(conf);
+		};
+
+		$scope.getDesc = function(permissions) {
+			var desc = "";
+			angular.forEach(permissions.split(","), function(item) {
+				if (desc) {
+					desc += ",";
+				}
+				desc += $scope.columnMap[item].desc;
+			});
+			return desc;
+		};
+	} ]);
+
+	//父页面打开按【确定】按钮时的回调函数
+	function getData() {
+		var scope = AngularUtil.getScope();
+		var json = {
+			dynRights : scope.dynRights,
+			data : scope.data
+		}
+		return json;
+	}
+</script>
+</head>
+<body ng-controller="ctrl" ng-init="init()">
+	<form name="form">
+		<table class="form-table">
+			<tr>
+				<th>说明</th>
+				<td style="color: green;">
+					该功能只会影响前端的展示，不会影响后端真正的权限（后端的权限跟入库有关的）。
+					<br />
+					因此无法通过动态权限将页面权限升级，例如：原权限是只读，无法通过动态权限配置升级为编辑。
+					<br />
+					权限排序由高到低：必填（b）->编辑（w）->只读（r）->无（n）
+				</td>
+			</tr>
+		</table>
+		<table class="form-table">
+			<tr>
+				<th>字段</th>
+				<th>权限</th>
+				<th>脚本</th>
+				<th>操作</th>
+			</tr>
+			<tr>
+				<td>
+					<select class="form-control" multiple="multiple" size="5" ab-validate="{required:true}" ng-model="selectedColumns" ng-options="m as m.desc for m in columnCList">
+						<option value="">请选择</option>
+					</select>
+				</td>
+				<td>
+					<select class="form-control" ng-show="selectedColumns" ab-validate="{required:true}" ng-model="selectedRights" ng-options="v.key as v.desc for (k,v) in RightsType">
+						<option value="">请选择</option>
+					</select>
+				</td>
+				<td></td>
+				<td style="text-align: center;">
+					<a class="btn btn-sm btn-primary fa-add" ng-click="add()">增加</a>
+				</td>
+			</tr>
+			<tr ng-repeat="item in dynRights">
+				<td>{{getDesc(item.permissions)}}</td>
+				<td>{{RightsTypeMap[item.rights]}}</td>
+				<td>{{item.script}}</td>
+				<td style="text-align: center;">
+					<a class="btn btn-sm btn-primary fa-edit" ng-click="setting(item)">配置</a>
+					<a class="btn btn-sm btn-primary fa-trash" ng-click="ArrayTool.del($index,dynRights)">删除</a>
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

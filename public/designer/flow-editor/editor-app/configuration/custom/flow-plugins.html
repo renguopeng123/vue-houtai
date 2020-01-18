@@ -1,0 +1,224 @@
+<div ng-controller="FlowPluginsController">
+    <!-- 节点，插件配置 -->
+
+    <!-- 节点跳转规则 -->
+    <div class="panel panel-primary" ng-if="pluginHasPermission('ruleSkip', 'UserTask,')">
+        <div class="panel-heading">
+            <div class="panel-heading-title">
+                <div style="float:left; width: 90%;" onclick="panelCollapseOrExpand(this)">
+                    节点跳转规则<i class="panel-icon-custom panel-heading-collapse"></i>
+                </div>
+                <div>
+                    <i class="panel-icon-custom panel-heading-add" ng-click="editRuleSkip()"></i>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="node-users">
+                <div class="users" ng-repeat="rule in currentSelectedNodePlugins.ruleSkip track by $index">
+                    <div class="users-content">
+                        <p>
+                            {{rule.name}}
+                        </p>
+                        <p class="users-content-weak">跳至:{{rule.targetNodeDesc}}({{rule.targetNode}})</p>
+                    </div>
+                    <div class="users-content-edit">
+                        <i class="panel-icon-custom panel-heading-edit" ng-click="editRuleSkip($index)"></i>
+                    </div>
+                </div>
+                <div class="alert alert-info" role="alert" ng-show="!currentSelectedNodePlugins.ruleSkip || currentSelectedNodePlugins.ruleSkip.length === 0">
+                    尚未配置节点规则
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 事件脚本设置 -->
+    <div class="panel panel-primary" ng-if="pluginHasPermission('nodeScript', 'UserTask,StartNoneEvent,EndNoneEvent,')">
+        <div class="panel-heading">
+            <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+                事件脚本设置<i class="panel-icon-custom panel-heading-collapse"></i>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="node-users">
+                <div class="users" ng-if="selectedItem.nodeType==='StartNoneEvent'">
+                    <div class="users-content">
+                        <p>开始事件</p>
+                        <p class="users-content-weak">{{currentSelectedNodePlugins.nodeScript.startEvent ? currentSelectedNodePlugins.nodeScript.startEvent : "尚未配置流程创建时脚本"}}</p>
+                    </div>
+                    <div class="users-content-edit">
+                        <i class="panel-icon-custom panel-heading-edit" ng-click="editEventScript('startEvent')"></i>
+                    </div>
+                </div>
+                <div class="users" ng-if="selectedItem.nodeType==='EndNoneEvent'">
+                    <div class="users-content">
+                        <p>结束事件</p>
+                        <p class="users-content-weak">{{currentSelectedNodePlugins.nodeScript.endEvent ? currentSelectedNodePlugins.nodeScript.endEvent : "尚未配置流程结束脚本"}}</p>
+                    </div>
+                    <div class="users-content-edit">
+                        <i class="panel-icon-custom panel-heading-edit" ng-click="editEventScript('endEvent')"></i>
+                    </div>
+                </div>
+                <div class="users" ng-if="selectedItem.nodeType==='EndNoneEvent'">
+                    <div class="users-content">
+                        <p>人工终止事件</p>
+                        <p class="users-content-weak">{{currentSelectedNodePlugins.nodeScript.manualEnd ? currentSelectedNodePlugins.nodeScript.manualEnd : "尚未配置人工终止时脚本"}}</p>
+                    </div>
+                    <div class="users-content-edit">
+                        <i class="panel-icon-custom panel-heading-edit" ng-click="editEventScript('manualEnd')"></i>
+                    </div>
+                </div>
+                <div class="users" ng-if="selectedItem.nodeType==='UserTask'||selectedItem.nodeType==='SignTask'">
+                    <div class="users-content">
+                        <p>前置事件</p>
+                        <p class="users-content-weak">{{currentSelectedNodePlugins.nodeScript.taskCreate ? currentSelectedNodePlugins.nodeScript.taskCreate : "尚未配置任务创建时脚本"}}</p>
+                    </div>
+                    <div class="users-content-edit">
+                        <i class="panel-icon-custom panel-heading-edit" ng-click="editEventScript('taskCreate')"></i>
+                    </div>
+                </div>
+                <div class="users" ng-if="selectedItem.nodeType==='UserTask'||selectedItem.nodeType==='SignTask'">
+                    <div class="users-content">
+                        <p>后置事件</p>
+                        <p class="users-content-weak">{{currentSelectedNodePlugins.nodeScript.taskComplete ? currentSelectedNodePlugins.nodeScript.taskComplete : "尚未配置任务完成时脚本"}}</p>
+                    </div>
+                    <div class="users-content-edit">
+                        <i class="panel-icon-custom panel-heading-edit" ng-click="editEventScript('taskComplete')"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 多实例会签 -->
+    <div class="panel panel-primary" ng-if="pluginHasPermission('signTask', 'UserTask,')">
+        <div class="panel-heading">
+            <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+                多实例会签<i class="panel-icon-custom panel-heading-collapse"></i>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal" style="width: 95%">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label middle title">属性设置:</label>
+                    <div class="col-sm-9">
+                        <label class="radio-label" ng-class="{'checked': !currentSelectedNodePlugins.signTask.signMultiTask}">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" ng-value=false ng-model="currentSelectedNodePlugins.signTask.signMultiTask">
+                            单实例任务
+                        </label>
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNodePlugins.signTask.signMultiTask}"
+                               ab-tip title="如果配置多实例会签，该任务则会通过候选人派生出多个会签任务，并统计会签结果。">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" ng-value=true ng-model="currentSelectedNodePlugins.signTask.signMultiTask">
+                            多实例会签
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="currentSelectedNodePlugins.signTask.signMultiTask">
+                    <label class="col-sm-3 control-label middle title">计票策略:</label>
+                    <div class="col-sm-9">
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNodePlugins.signTask.voteType==='PERCENT'}"
+                               ab-tip title="百分比计算方式：当同意票数所占比例达到设置比例时，会签结果为同意">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" value="PERCENT" ng-model="currentSelectedNodePlugins.signTask.voteType">
+                            百分比
+                        </label>
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNodePlugins.signTask.voteType==='AMOUNT'}"
+                               ab-tip title="投票数计算方式：当同意票数达到票数后，会签结果为同意">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" value="AMOUNT" ng-model="currentSelectedNodePlugins.signTask.voteType">
+                            投票数
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="currentSelectedNodePlugins.signTask.signMultiTask">
+                    <label class="col-sm-3 control-label middle title">{{currentSelectedNodePlugins.signTask.voteType==='PERCENT'?'百分比':'投票数'}}:</label>
+                    <div class="col-sm-9">
+                        <input type="text" ng-model="currentSelectedNodePlugins.signTask.voteAmount" class="form-control"/>
+                        <span ng-show="currentSelectedNodePlugins.signTask.voteType==='PERCENT'" class="sign_percent">%</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="currentSelectedNodePlugins.signTask.signMultiTask">
+                    <label class="col-sm-3 control-label middle title">是否搜集<br/>所有投票:</label>
+                    <div class="col-sm-9">
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNodePlugins.signTask.needAllSign}">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" ng-value=true ng-model="currentSelectedNodePlugins.signTask.needAllSign">
+                            所有人需要会签
+                        </label>
+                        <label class="radio-label" ng-class="{'checked': !currentSelectedNodePlugins.signTask.needAllSign}">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" ng-value=false ng-model="currentSelectedNodePlugins.signTask.needAllSign">
+                            满足计票策略后不等待其他人会签
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="currentSelectedNodePlugins.signTask.signMultiTask">
+                    <label class="col-sm-3 control-label middle title">反对结果的<br/>后续动作:</label>
+                    <div class="col-sm-9">
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNodePlugins.signTask.opposedAction==='oppose'}">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" value="oppose" ng-model="currentSelectedNodePlugins.signTask.opposedAction">
+                            标记会签结果为反对
+                        </label>
+                        <label class="radio-label" ng-class="{'checked': currentSelectedNodePlugins.signTask.opposedAction==='reject'}">
+                            <i class="panel-icon-custom editor-icon-star"></i>
+                            <input type="radio" value="reject" ng-model="currentSelectedNodePlugins.signTask.opposedAction">
+                            对任务执行驳回处理
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 子流程设置 -->
+    <div class="panel panel-primary" ng-if="pluginHasPermission('', 'CallActivity,')">
+        <div class="panel-heading">
+            <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+                子流程设置<i class="panel-icon-custom panel-heading-collapse"></i>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="node-users">
+                <div class="child-activiti">
+                    <a class="btn btn-info btn-sm form-btn" ng-click="selectBpmDef()">选择外部子流程</a>
+                    <h4 ng-show="currentSelectedNode.childActivityKey">
+                        {{currentSelectedNode.childActivityName}}<small>[{{currentSelectedNode.childActivityKey}}]</small>
+                    </h4>
+                </div>
+                <div>
+                    <p class="text-muted">子流程会在当前节点创建时触发，当子流程终止后，主流程会继续向下运行。</p>
+                    <p class="text-muted">子流程如果与主流程数据模型一致，则数据共享。我们推荐子流程配置上主流程的数据模型，这样子流程可以在表单和流程运行时轻易的使用到主流程业务数据</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 定时设置 -->
+    <div class="panel panel-primary" ng-if="'BoundaryTimerEvent,CatchTimerEvent,ServiceTask,StartTimerEvent'.indexOf(selectedItem.nodeType)!=-1">
+        <div class="panel-heading">
+            <div class="panel-heading-title" onclick="panelCollapseOrExpand(this)">
+                定时设置<i class="panel-icon-custom panel-heading-collapse"></i>
+            </div>
+        </div>
+        <div class="panel-body timer">
+            <div class="form-horizontal" style="overflow-x: hidden">
+                <div class="form-group" ng-repeat="property in selectedItem.properties"
+                     ng-hide="'oryx-documentation,oryx-process_id,oryx-name,oryx-overrideid,oryx-namepackage,oryx-name'.indexOf(property.key) != -1">
+                    <label class="col-sm-3 control-label middle title" ng-if="!property.hidden">{{ property.title }}:</label>
+                    <label class="col-sm-3 control-label middle title" ng-if="property.hidden">{{ property.title }}&nbsp;({{'PROPERTY.REMOVED' | translate}}):</label>
+                    <div class="col-sm-9" ng-click="propertyClicked($index)">
+                        <ng-include src="getPropertyTemplateUrl($index)" ng-if="!property.hasReadWriteMode"></ng-include>
+                        <ng-include src="getPropertyReadModeTemplateUrl($index)" ng-if="property.hasReadWriteMode && property.mode == 'read'"></ng-include>
+                        <ng-include src="getPropertyWriteModeTemplateUrl($index)" ng-if="property.hasReadWriteMode && property.mode == 'write'"></ng-include>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

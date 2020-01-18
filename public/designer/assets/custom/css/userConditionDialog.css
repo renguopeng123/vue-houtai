@@ -1,0 +1,134 @@
+.panel.inline {
+    display: inline-block;
+    height: 100%
+}
+
+.panel.inline .panel-body {
+    height: 100%
+}
+
+.script-condition {
+    position: absolute;
+    bottom: 5px;
+    width: 100%;
+}
+
+.script-title {
+    padding: 5px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.script-btn {
+    padding: 10px;
+}
+
+.script-code {
+    padding: 0 10px;
+}
+
+.user-details {
+    height: calc(100% - 165px);
+    overflow-y: scroll;
+}
+
+.detail-row {
+    font-size: 14px;
+    padding: 10px;
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+}
+
+/************************************覆盖原设置***********************************/
+.vertical-tab-container {
+    width: 90px;
+}
+
+.user-content {
+    width: 870px;
+    padding: 0 10px;
+    position: relative;
+}
+
+.tab-title-order {
+    border-right: 0;
+    text-align: center;
+}
+
+li.current .tab-order {
+    background-color: #A0CEFF;
+}
+
+li.current .tab-title {
+    margin-left: 15px;
+}
+
+li.current .tab-title .tab-title-order {
+    width: 60px;
+    background-color: #A0CEFF;
+}
+
+.col-xs-1,
+.col-xs-2,
+.col-xs-3 {
+    padding: 0 5px;
+}
+
+.col-xs-1 select,
+.col-xs-2 select,
+.col-xs-3 select {
+    padding: 3px;
+    height: 30px;
+    box-shadow: none;
+    border-color: #ddd;
+}
+
+.user-details-order {
+    line-height: 30px;
+    height: 30px;
+}
+
+.detail-row-input {
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #ddd;
+    text-indent: 5px;
+    width: 100%;
+}
+
+/************************************字体图标***********************************/
+@font-face {
+    font-family: 'ActivitiModeler';
+    src: url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.eot');
+    src: url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.eot?#iefix') format('embedded-opentype'),
+    url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.woff') format('woff'),
+    url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.ttf') format('truetype'),
+    url('../../../flow-editor/editor-app/fonts/activiti-admin-webfont-custom.svg#ActivitiModeler') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icon-custom {
+    font-family: 'ActivitiModeler';
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    background: none;
+    padding: 5px;
+}
+
+.icon-delete:before {
+    color: #F46C6C;
+    content: "\e607";
+}
+
+.icon-arrow-down:before {
+    color: #0081FF;
+    content: "\e604";
+}
+
+.icon-arrow-up:before {
+    color: #0081FF;
+    content: "\e610";
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>启动流程</title>
+<link href="build/common/base.css" rel="stylesheet">
+<script type="text/javascript" src="build/common/base.js"></script>
+<script type="text/javascript" src="build/common/vueEdit.js"></script>
+<script type="text/javascript" src="assets/vue/service/bpm/bpmService-vue.js"></script>
+<style media="print">
+.print-hidden {
+	display: none
+}
+</style>
+</head>
+
+<body class="panel panel-default">
+	<div id="startController">
+        <ab-cust-dialog class="ivu-btn ivu-btn-primary" dialog-key="userSelector" v-model="data" :param="{}" :dialog-setting="{'multiple':true}" value-account="mz">用户查询</ab-cust-dialog>
+
+		<!--<div class="panel-heading print-hidden">
+			<bpm-buttons :buttons="buttons"></bpm-buttons>
+		</div>
+		<div v-if="form.type=='INNER'">
+			<ab-custom-form></ab-custom-form>
+		</div>
+		<div v-if="form.type=='FRAME'">
+			<ab-url-form :form="form"></ab-url-form>
+		</div>-->
+	</div>
+</body>
+</html>
+
+<script type="text/javascript">
+  window.__ctx = "https://bpm.ecloud.work/ecloud-bpm-platform";
+  import abCustDialog from '@/bpm/ab-components/ab-cust-dialog/ab-cust-dialog.vue';
+
+	var app = new Vue({
+		el : '#startController',
+		data : function() {
+			return {
+				defName : "",
+				instance : "",
+				form : "",
+				buttons : "",
+				task : "",
+                  data : [ { "name": "销售部", "key": "xsb" }],
+                    dialogSetting:{
+                    multiple : false,
+                  }
+			}
+		},
+		created : function() {
+//			var thisVue = this;
+//			bpmService.init({
+//				defId : $.getParam("defId"),
+//				flowKey : $.getParam("defKey"),
+//				instanceId : $.getParam("instanceId")
+//			}, function(data) {
+//				Vue.formService.initCustFormFu(data.form.formHtml,data);
+//				thisVue.form = data.form;
+//				thisVue.defName = data.defName;
+//				thisVue.buttons = data.buttonList;
+//				thisVue.instance = data.instance;
+//			});
+		}
+	})
+</script>

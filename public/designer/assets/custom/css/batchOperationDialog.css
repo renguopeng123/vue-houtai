@@ -1,0 +1,167 @@
+/*****************************左侧tab *****************************/
+.vertical-tab {
+    height: 100%;
+    background-color: #F5F6F8;
+    overflow: auto;
+}
+
+.dashed-line {
+    width: 30px;
+    height: 100%;
+    border-right: 1px dashed #ddd
+}
+
+.vertical-tab-container {
+    width: 270px;
+    height: 100%;
+}
+
+.vertical-tab-container ul {
+    margin-top: 40px;
+    margin-left: -15px;
+}
+
+.vertical-tab-container ul li {
+    margin-top: 10px;
+}
+
+.vertical-tab-content {
+    height: 50px;
+}
+
+.tab-order {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    margin: 10px 0;
+    padding: 6px 10px;
+    font-weight: 700;
+    background-color: #F4F9FF;
+}
+
+li.current .tab-order {
+    background-color: #A0CEFF;
+}
+
+.tab-title {
+    height: 50px;
+    margin-left: 45px;
+    border-right: 0;
+}
+
+li.current .tab-title {
+    margin-left: 15px;
+}
+
+.tab-title-order {
+    width: 30px;
+    height: 50px;
+    padding: 15px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    background-color: #F4F9FF;
+}
+
+li.current .tab-title-order {
+    background-color: #A0CEFF;
+}
+
+.tab-title-content {
+    width: 180px;
+    height: 50px;
+    padding: 15px 10px;
+    border: 1px solid #ccc;
+    border-left: 0;
+    border-right: 0;
+    background-color: #FBFCFE;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+li.current .tab-title-content {
+    width: 210px;
+    background-color: #FFF;
+}
+
+li.tab-add {
+    margin-top: 20px;
+}
+
+.tab-add .tab-order {
+    background-color: #F1F9EC;
+}
+
+.tab-add-btn {
+    height: 30px;
+    margin: 10px 0;
+    padding: 5px 15px;
+    border: 1px solid #C2E7B1;
+    border-right: 0;
+    border-radius: 5px 0 0 5px;
+    color: #68C33A;
+    background-color: #F1F9EC;
+}
+
+/******************************************右侧按钮*******************************************/
+.user-content {
+    width: 685px;
+    padding-right: 10px;
+}
+
+.user-select {
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.user-content .btns {
+    height: 50px;
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0;
+}
+
+.user-content .btns .btn {
+    padding: 6px 20px;
+    margin-right: 5px;
+}
+
+.btn-info,
+.btn-info[disabled],
+.btn-info[disabled]:hover {
+    background-color: #EBF5FE;
+    color: #3E9FFE;
+    border-color: #B2D8FD;
+}
+
+.btn-danger,
+.btn-danger[disabled],
+.btn-danger[disabled]:hover {
+    background-color: #FEF0F0;
+    color: #F46C6C;
+    border-color: #FCC4C5;
+}
+
+.btn-primary,
+.btn-primary[disabled],
+.btn-primary[disabled]:hover {
+    background-color: rgb(103, 194, 57);
+    border-color: rgb(103, 194, 57);
+}
+
+.btn-success,
+.btn-success[disabled],
+.btn-success[disabled]:hover {
+    background-color: #F1F9EC;
+    border-color: #C2E7B1;
+    color: #67C13B;
+}
+
+.btn-sm {
+    padding: 5px;
+}
+
+.margin-b-5 {
+    margin-bottom: 5px;
+}
