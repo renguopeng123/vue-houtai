@@ -28,7 +28,7 @@
     "element-ui": "~2.11.1",
     "fuse.js": "~3.4.5",
     "iview": "~3.2.2",
-    "jointjs": "~3.0.4",
+    "jointjs": "~3.4.2",
     "js-cookie": "~2.2.0",
     "js-md5": "~0.7.3",
     "jsonlint": "~1.6.3",
